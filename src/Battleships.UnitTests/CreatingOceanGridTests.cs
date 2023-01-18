@@ -12,6 +12,20 @@ public class CreatingOceanGridTests
         
         result.IsSuccess.Should().BeTrue();
     }
+
+    [Fact]
+    public void can_be_created_with_two_ships()
+    {
+        var result = OceanGrid.Create(4, 4, new Ship(), new Ship());
+        result.IsSuccess.Should().BeTrue();
+    }
+    
+    [Fact]
+    public void can_be_created_with_many_ships()
+    {
+        var result = OceanGrid.Create(4, 4, new Ship(), new Ship(), new Ship(), new Ship(), new Ship());
+        result.IsSuccess.Should().BeTrue();
+    }
     
     public void cannot_have_negative_or_0_size(){}
     
