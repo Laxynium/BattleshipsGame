@@ -24,19 +24,14 @@ public record Fleet
 {
     private readonly FleetShip _ship;
 
-    private Fleet(FleetShip ship)
-    {
+    private Fleet(FleetShip ship) => 
         _ship = ship;
-    }
 
     public static Fleet Create(FleetShip ship) => 
         new(ship);
 
-    public ShootResult ReceiveShot(Coordinate coordinate)
-    {
-        return _ship.ReceiveShot(coordinate);
-        
-    }
+    public ShootResult ReceiveShot(Coordinate coordinate) => 
+        _ship.ReceiveShot(coordinate);
 
     public enum ShootResult
     {
