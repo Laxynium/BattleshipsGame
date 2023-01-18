@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C94C977D-B09B-4A71-A029-1FC34DF7F44D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Battleships.Console", "src\Battleships.Console\Battleships.Console.csproj", "{0A2583EF-FB50-40CC-9C41-CB574E53D9CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Battleships.UnitTests", "src\Battleships.UnitTests\Battleships.UnitTests.csproj", "{D20D3399-A2A7-4695-A547-F37C633B4485}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0A2583EF-FB50-40CC-9C41-CB574E53D9CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A2583EF-FB50-40CC-9C41-CB574E53D9CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A2583EF-FB50-40CC-9C41-CB574E53D9CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A2583EF-FB50-40CC-9C41-CB574E53D9CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D20D3399-A2A7-4695-A547-F37C633B4485}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D20D3399-A2A7-4695-A547-F37C633B4485}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D20D3399-A2A7-4695-A547-F37C633B4485}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D20D3399-A2A7-4695-A547-F37C633B4485}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0A2583EF-FB50-40CC-9C41-CB574E53D9CC} = {C94C977D-B09B-4A71-A029-1FC34DF7F44D}
+		{D20D3399-A2A7-4695-A547-F37C633B4485} = {C94C977D-B09B-4A71-A029-1FC34DF7F44D}
+	EndGlobalSection
+EndGlobal
