@@ -9,20 +9,27 @@ public record Coordinate(int X, int Y)
 public record FleetShip
 {
     private readonly Coordinate _coordinate;
+    private readonly HashSet<Coordinate> _coordinates;
 
-    private FleetShip(Coordinate coordinate)
+    private FleetShip(Coordinate coordinate, params Coordinate[] coordinates)
     {
         _coordinate = coordinate;
+        _coordinates = coordinates.ToHashSet();
     }
     
-    public static FleetShip Create(Coordinate coordinate) => 
-        new(coordinate);
+    public static FleetShip Create(Coordinate coordinate, params Coordinate[] coordinates) => 
+        new(coordinate, coordinates);
 
     public Fleet.ShootResult ReceiveShot(Coordinate coordinate)
     {
         if (_coordinate == coordinate)
         {
-            return Fleet.ShootResult.GotHit;
+            return Fleet.ShootResult.Hit;
+        }
+
+        if (_coordinates.Contains(coordinate))
+        {
+            return Fleet.ShootResult.Hit;
         }
 
         return Fleet.ShootResult.Miss;
@@ -49,6 +56,6 @@ public record Fleet
 
     public enum ShootResult
     {
-        GotHit, Miss
+        Hit, Miss
     }
 }
