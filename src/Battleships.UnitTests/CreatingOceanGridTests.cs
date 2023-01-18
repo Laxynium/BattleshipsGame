@@ -14,6 +14,7 @@ public class CreatingOceanGridTests
         var oceanGrid = result.Value;
         oceanGrid.Width.Should().Be(4);
         oceanGrid.Height.Should().Be(4);
+        oceanGrid.Ships.Should().HaveCount(1);
     }
 
     [Fact]
@@ -25,6 +26,7 @@ public class CreatingOceanGridTests
         var oceanGrid = result.Value;
         oceanGrid.Width.Should().Be(4);
         oceanGrid.Height.Should().Be(4);
+        oceanGrid.Ships.Should().HaveCount(2);
     }
     
     [Fact]
@@ -36,6 +38,7 @@ public class CreatingOceanGridTests
         var oceanGrid = result.Value;
         oceanGrid.Width.Should().Be(4);
         oceanGrid.Height.Should().Be(4);
+        oceanGrid.Ships.Should().HaveCount(5);
     }
     
     public void cannot_have_negative_or_0_size(){}

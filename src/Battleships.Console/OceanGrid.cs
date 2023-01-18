@@ -8,15 +8,19 @@ public class OceanGrid
 {
     public int Width { get; }
     public int Height { get; }
-    
-    private OceanGrid(int width, int height)
+
+    private readonly List<Ship> _ships;
+    public IReadOnlyList<Ship> Ships => _ships.AsReadOnly();
+
+    private OceanGrid(int width, int height, IEnumerable<Ship> ships)
     {
         Width = width;
         Height = height;
+        _ships = ships.ToList();
     }
 
-    public static Result<OceanGrid> Create(int width, int height, params Ship[] ship)
+    public static Result<OceanGrid> Create(int width, int height, params Ship[] ships)
     {
-        return new OceanGrid(width, height);
+        return new OceanGrid(width, height, ships);
     }
 }
