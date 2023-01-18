@@ -1,8 +1,17 @@
-﻿namespace Battleships.UnitTests;
+﻿using Battleships.Console;
+using FluentAssertions;
+
+namespace Battleships.UnitTests;
 
 public class CreatingOceanGridTests
 {
-    public void can_be_created(){}
+    [Fact]
+    public void can_be_created_with_one_ship()
+    {
+        var result = OceanGrid.Create(4, 4, new Ship());
+        
+        result.IsSuccess.Should().BeTrue();
+    }
     
     public void cannot_have_negative_or_0_size(){}
     
