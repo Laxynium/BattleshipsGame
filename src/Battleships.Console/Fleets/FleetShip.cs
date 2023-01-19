@@ -39,6 +39,9 @@ public record FleetShip
     public bool IsOverlappingWith(FleetShip another) => 
         _coordinates.Keys.ToHashSet().Overlaps(another._coordinates.Keys);
 
+    public bool IsSunk() => 
+        _coordinates.Values.All(x => x == true);
+
     private static bool AreCoordinatesConnected(IReadOnlyCollection<Coordinate> allCoordinates)
     {
         var connectedCoordinates = new List<Coordinate> {allCoordinates.First()};

@@ -30,11 +30,16 @@ public record Fleet
             var result = ship.ReceiveShot(coordinate);
             if (result != ShootResult.Miss)
             {
-                return result;
+                return IsFleetSunk() ? ShootResult.FleetSunk : result;
             }
         }
 
         return ShootResult.Miss;
+    }
+
+    private bool IsFleetSunk()
+    {
+        return _ships.All(x => x.IsSunk());
     }
 
 
