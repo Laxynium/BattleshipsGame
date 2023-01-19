@@ -47,4 +47,20 @@ public class ShootingFleetTests
         fleet.ReceiveShot((2, 3)).Should().Be(Fleet.ShootResult.Miss);
         fleet.ReceiveShot((4, 3)).Should().Be(Fleet.ShootResult.Miss);
     }
+
+    [Fact]
+    public void shot_with_hit_many_coordinates_ship()
+    {
+        var fleet = Fleet.Create(FleetShip.Create((3, 3), (3, 4), (3, 5), (3, 6), (3, 7)));
+
+        fleet.ReceiveShot((3, 4)).Should().Be(Fleet.ShootResult.Hit);
+        fleet.ReceiveShot((3, 5)).Should().Be(Fleet.ShootResult.Hit);
+        fleet.ReceiveShot((3, 6)).Should().Be(Fleet.ShootResult.Hit);
+        fleet.ReceiveShot((3, 7)).Should().Be(Fleet.ShootResult.Hit);
+
+        fleet.ReceiveShot((3, 2)).Should().Be(Fleet.ShootResult.Miss);
+        fleet.ReceiveShot((2, 4)).Should().Be(Fleet.ShootResult.Miss);
+        fleet.ReceiveShot((4, 5)).Should().Be(Fleet.ShootResult.Miss);
+        fleet.ReceiveShot((3, 9)).Should().Be(Fleet.ShootResult.Miss);
+    }
 }
