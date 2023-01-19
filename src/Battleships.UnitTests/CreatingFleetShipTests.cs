@@ -1,4 +1,4 @@
-﻿using Battleships.Console;
+﻿using Battleships.Console.Fleets;
 using FluentAssertions;
 
 namespace Battleships.UnitTests;
