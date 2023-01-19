@@ -28,12 +28,7 @@ public record FleetShip
 
         _coordinates[coordinate] = true;
 
-        if (_coordinates.Values.All(x => x == true))
-        {
-            return ShootResult.Sunk;
-        }
-
-        return ShootResult.Hit;
+        return IsSunk() ? ShootResult.Sunk : ShootResult.Hit;
     }
 
     public bool IsOverlappingWith(FleetShip another) => 
