@@ -18,6 +18,9 @@ public record FleetShip
 
     public Fleet.ShootResult ReceiveShot(Coordinate coordinate) => 
         _coordinates.Contains(coordinate) ? Fleet.ShootResult.Hit : Fleet.ShootResult.Miss;
+
+    public bool OverlapsWith(FleetShip another) => 
+        _coordinates.Overlaps(another._coordinates);
 }
 
 public record Fleet
@@ -27,8 +30,21 @@ public record Fleet
     private Fleet(IEnumerable<FleetShip> ships) => 
         _ships = ships.ToList();
 
-    public static Fleet Create(FleetShip ship, params FleetShip[] ships) => 
-        new(new []{ship}.Concat(ships));
+    public static Fleet Create(FleetShip ship, params FleetShip[] ships)
+    {
+        var allShips = new[] { ship }.Concat(ships).ToList();
+        
+        var areThereOverlappingShips = allShips
+            .SelectMany(s => allShips.Where(s2 => s2 != s).Select(s2 => (s, s2)))
+            .Any(x => x.s.OverlapsWith(x.s2));
+
+        if (areThereOverlappingShips)
+        {
+            throw new ShipsAreOverlappingException();
+        }
+        
+        return new(allShips);
+    }
 
     public ShootResult ReceiveShot(Coordinate coordinate)
     {
@@ -49,4 +65,8 @@ public record Fleet
     {
         Hit, Miss
     }
+}
+
+public class ShipsAreOverlappingException : Exception
+{
 }
