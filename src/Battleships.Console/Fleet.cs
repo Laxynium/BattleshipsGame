@@ -41,8 +41,8 @@ public record FleetShip
 
     private static bool AreCoordinatesConnected(IReadOnlyCollection<Coordinate> allCoordinates)
     {
-        var segment = new List<Coordinate>(){allCoordinates.First()};
-        var queue = new Queue<Coordinate>(segment);
+        var connectedCoordinates = new List<Coordinate> {allCoordinates.First()};
+        var queue = new Queue<Coordinate>(connectedCoordinates);
         while (queue.Count > 0)
         {
             var coordinate = queue.Dequeue();
@@ -50,17 +50,18 @@ public record FleetShip
             var nextCoordinatesToVisit = coordinate
                 .GetNeighbours()
                 .Intersect(allCoordinates)
-                .Except(segment)
+                .Except(connectedCoordinates)
                 .ToList();
             
-            segment.AddRange(nextCoordinatesToVisit);
+            connectedCoordinates.AddRange(nextCoordinatesToVisit);
+            
             foreach (var nextCoordinate in nextCoordinatesToVisit)
             {
                 queue.Enqueue(nextCoordinate);
             }
         }
 
-        return segment.Count == allCoordinates.Count;
+        return connectedCoordinates.Count == allCoordinates.Count;
     }
 }
 
