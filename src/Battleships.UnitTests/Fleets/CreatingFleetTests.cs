@@ -1,7 +1,7 @@
 ﻿using Battleships.Console.Fleets;
 using FluentAssertions;
 
-namespace Battleships.UnitTests;
+namespace Battleships.UnitTests.Fleets;
 
 public class CreatingFleetTests
 {
