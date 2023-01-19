@@ -16,7 +16,7 @@ public class GameStatesChangesTests
         state.Should().BeOfType<PlayerTurnState>();
     }
     
-    [Fact(Skip = "Need to first extend fleets capabilities")]
+    [Fact]
     public void player_turn_state_changes_to_game_finished_state_when_all_ships_got_sunk()
     {
         var fleet = Fleet.Create(FleetShip.Create((0, 0)));
@@ -27,12 +27,32 @@ public class GameStatesChangesTests
 
         nextState.Should().BeOfType<GameOverState>();
     }
+    
+    [Fact]
+    public void sinking_all_the_ships_will_change_state_to_game_over()
+    {
+        var fleet = Fleet.Create(FleetShip.Create((0, 0)), 
+            FleetShip.Create((1, 1)),
+            FleetShip.Create((3, 3)));
+        
+        IGameState state = new PlayerTurnState(fleet);
+        
+        state = state.HandleChange(new TakeAShotAt((0, 0)));
+        state.Should().BeOfType<PlayerTurnState>();
+
+        state = state.HandleChange(new TakeAShotAt((1, 1)));
+        state.Should().BeOfType<PlayerTurnState>();
+        
+        state = state.HandleChange(new TakeAShotAt((3, 3)));
+        state.Should().BeOfType<GameOverState>();
+    }
 }
 
 public record TakeAShotAt(Coordinate Coordinate);
 
 public interface IGameState
 {
+    IGameState HandleChange(TakeAShotAt takeAShotAt);
 }
 
 public class PlayerTurnState : IGameState
@@ -46,10 +66,21 @@ public class PlayerTurnState : IGameState
 
     public IGameState HandleChange(TakeAShotAt takeAShotAt)
     {
+        var result = _fleet.ReceiveShot(takeAShotAt.Coordinate);
+        
+        if (result == ShootResult.FleetSunk)
+        {
+            return new GameOverState();
+        }
+        
         return new PlayerTurnState(_fleet);
     }
 }
 
 public class GameOverState : IGameState
 {
+    public IGameState HandleChange(TakeAShotAt takeAShotAt)
+    {
+        return new GameOverState();
+    }
 }
