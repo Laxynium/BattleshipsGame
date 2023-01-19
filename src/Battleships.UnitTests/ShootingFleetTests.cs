@@ -58,4 +58,15 @@ public class ShootingFleetTests
         fleet.ReceiveShot((4, 5)).Should().Be(Fleet.ShootResult.Miss);
         fleet.ReceiveShot((3, 9)).Should().Be(Fleet.ShootResult.Miss);
     }
+
+    [Fact]
+    public void shooting_when_there_are_two_ships()
+    {
+        var fleet = Fleet.Create(
+            FleetShip.Create((5, 5), (6, 5)),
+            FleetShip.Create((4,4),(3,4)));
+
+        fleet.ReceiveShot((5, 5)).Should().Be(Fleet.ShootResult.Hit);
+        fleet.ReceiveShot((3, 4)).Should().Be(Fleet.ShootResult.Hit);
+    }
 }

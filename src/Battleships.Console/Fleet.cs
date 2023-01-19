@@ -22,16 +22,28 @@ public record FleetShip
 
 public record Fleet
 {
-    private readonly FleetShip _ship;
+    private readonly List<FleetShip> _ships;
 
-    private Fleet(FleetShip ship) => 
-        _ship = ship;
+    private Fleet(IEnumerable<FleetShip> ships) => 
+        _ships = ships.ToList();
 
-    public static Fleet Create(FleetShip ship) => 
-        new(ship);
+    public static Fleet Create(FleetShip ship, params FleetShip[] ships) => 
+        new(new []{ship}.Concat(ships));
 
-    public ShootResult ReceiveShot(Coordinate coordinate) => 
-        _ship.ReceiveShot(coordinate);
+    public ShootResult ReceiveShot(Coordinate coordinate)
+    {
+        foreach (var ship in _ships)
+        {
+            var result = ship.ReceiveShot(coordinate);
+            if (result == ShootResult.Hit)
+            {
+                return ShootResult.Hit;
+            }
+        }
+
+        return ShootResult.Miss;
+    } 
+        
 
     public enum ShootResult
     {
