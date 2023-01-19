@@ -10,10 +10,10 @@ public class ShootingFleetTests
     {
         Fleet.Create(FleetShip.Create((3, 3)))
             .ReceiveShot((3, 3)).Should().Be(Fleet.ShootResult.Hit);
-        
+
         Fleet.Create(FleetShip.Create((4, 4)))
             .ReceiveShot((4, 4)).Should().Be(Fleet.ShootResult.Hit);
-        
+
         Fleet.Create(FleetShip.Create((5, 7)))
             .ReceiveShot((5, 7)).Should().Be(Fleet.ShootResult.Hit);
     }
@@ -35,13 +35,13 @@ public class ShootingFleetTests
 
         fleet.ReceiveShot((3, 3)).Should().Be(Fleet.ShootResult.Hit);
         fleet.ReceiveShot((3, 4)).Should().Be(Fleet.ShootResult.Hit);
-        
+
         fleet.ReceiveShot((3, 2)).Should().Be(Fleet.ShootResult.Miss);
         fleet.ReceiveShot((3, 5)).Should().Be(Fleet.ShootResult.Miss);
         fleet.ReceiveShot((2, 3)).Should().Be(Fleet.ShootResult.Miss);
         fleet.ReceiveShot((4, 3)).Should().Be(Fleet.ShootResult.Miss);
     }
-    
+
 
     [Fact]
     public void shooting_ship_with_many_coordinates()
@@ -64,9 +64,34 @@ public class ShootingFleetTests
     {
         var fleet = Fleet.Create(
             FleetShip.Create((5, 5), (6, 5)),
-            FleetShip.Create((4,4),(3,4)));
+            FleetShip.Create((4, 4), (3, 4)));
 
         fleet.ReceiveShot((5, 5)).Should().Be(Fleet.ShootResult.Hit);
         fleet.ReceiveShot((3, 4)).Should().Be(Fleet.ShootResult.Hit);
+        
+        fleet.ReceiveShot((6, 6)).Should().Be(Fleet.ShootResult.Miss);
+        fleet.ReceiveShot((4, 5)).Should().Be(Fleet.ShootResult.Miss);
+    }
+
+    [Fact]
+    public void shooting_when_there_many_ships()
+    {
+        var fleet = Fleet.Create(
+            FleetShip.Create((0, 0), (1, 0), (2, 0)),
+            FleetShip.Create((4, 1), (4, 2), (4,3)),
+            FleetShip.Create((7, 7)),
+            FleetShip.Create((8, 0), (8, 1), (8, 2), (8,3)),
+            FleetShip.Create((5, 2), (5, 3), (5,4)));
+        
+        fleet.ReceiveShot((1, 0)).Should().Be(Fleet.ShootResult.Hit);
+        fleet.ReceiveShot((4, 3)).Should().Be(Fleet.ShootResult.Hit);
+        fleet.ReceiveShot((8, 2)).Should().Be(Fleet.ShootResult.Hit);
+        fleet.ReceiveShot((5, 4)).Should().Be(Fleet.ShootResult.Hit);
+        fleet.ReceiveShot((7, 7)).Should().Be(Fleet.ShootResult.Hit);
+        
+        fleet.ReceiveShot((3, 0)).Should().Be(Fleet.ShootResult.Miss);
+        fleet.ReceiveShot((4, 0)).Should().Be(Fleet.ShootResult.Miss);
+        fleet.ReceiveShot((6, 6)).Should().Be(Fleet.ShootResult.Miss);
+        fleet.ReceiveShot((8, 5)).Should().Be(Fleet.ShootResult.Miss);
     }
 }
