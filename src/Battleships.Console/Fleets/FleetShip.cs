@@ -2,10 +2,10 @@ namespace Battleships.Console.Fleets;
 
 public record FleetShip
 {
-    private readonly HashSet<Coordinate> _coordinates;
+    private readonly Dictionary<Coordinate, bool> _coordinates;
 
     private FleetShip(IEnumerable<Coordinate> coordinates) => 
-        _coordinates = coordinates.ToHashSet();
+        _coordinates = coordinates.ToDictionary(x=>x, _=> false);
 
     public static FleetShip Create(Coordinate coordinate, params Coordinate[] coordinates)
     {
@@ -19,11 +19,25 @@ public record FleetShip
         return new FleetShip(allCoordinates);
     }
 
-    public ShootResult ReceiveShot(Coordinate coordinate) => 
-        _coordinates.Contains(coordinate) ? ShootResult.Hit : ShootResult.Miss;
+    public ShootResult ReceiveShot(Coordinate coordinate)
+    {
+        if (!_coordinates.ContainsKey(coordinate))
+        {
+            return ShootResult.Miss;
+        }
+
+        _coordinates[coordinate] = true;
+
+        if (_coordinates.Values.All(x => x == true))
+        {
+            return ShootResult.Sunk;
+        }
+
+        return ShootResult.Hit;
+    }
 
     public bool IsOverlappingWith(FleetShip another) => 
-        _coordinates.Overlaps(another._coordinates);
+        _coordinates.Keys.ToHashSet().Overlaps(another._coordinates.Keys);
 
     private static bool AreCoordinatesConnected(IReadOnlyCollection<Coordinate> allCoordinates)
     {

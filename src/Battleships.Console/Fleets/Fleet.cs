@@ -28,9 +28,9 @@ public record Fleet
         foreach (var ship in _ships)
         {
             var result = ship.ReceiveShot(coordinate);
-            if (result == ShootResult.Hit)
+            if (result != ShootResult.Miss)
             {
-                return ShootResult.Hit;
+                return result;
             }
         }
 
