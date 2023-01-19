@@ -4,6 +4,14 @@ public record Coordinate(int X, int Y)
 {
     public static implicit operator Coordinate((int x, int y) coordinate) =>
         new(coordinate.x, coordinate.y);
+
+    public IEnumerable<Coordinate> GetNeighbours()
+    {
+        yield return this with { X = X - 1 };
+        yield return this with { X = X + 1 };
+        yield return this with { Y = Y - 1 };
+        yield return this with { Y = Y + 1 };
+    }
 }
 
 public record FleetShip
@@ -13,8 +21,46 @@ public record FleetShip
     private FleetShip(IEnumerable<Coordinate> coordinates) => 
         _coordinates = coordinates.ToHashSet();
 
-    public static FleetShip Create(Coordinate coordinate, params Coordinate[] coordinates) => 
-        new(new []{coordinate}.Concat(coordinates));
+    public static FleetShip Create(Coordinate coordinate, params Coordinate[] coordinates)
+    {
+        var allCoordinates = new[] { coordinate }.Concat(coordinates).ToList();
+
+        if (!AreCoordinatesConnected(allCoordinates))
+        {
+            throw new FleetShipCoordinatesAreDisconnected();
+        }
+        
+        return new(allCoordinates);
+    }
+
+    private static bool AreCoordinatesConnected(IReadOnlyList<Coordinate> allCoordinates)
+    {
+        if (allCoordinates.Count == 1)
+        {
+            return true;
+        }
+
+        var segment = new List<Coordinate>(){allCoordinates[0]};
+        var queue = new Queue<Coordinate>(segment);
+        while (queue.Count > 0)
+        {
+            var coordinate = queue.Dequeue();
+
+            var nextCoordinatesToVisit = coordinate
+                .GetNeighbours()
+                .Intersect(allCoordinates)
+                .Except(segment)
+                .ToList();
+            
+            segment.AddRange(nextCoordinatesToVisit);
+            foreach (var nextCoordinate in nextCoordinatesToVisit)
+            {
+                queue.Enqueue(nextCoordinate);
+            }
+        }
+
+        return segment.Count == allCoordinates.Count;
+    }
 
     public Fleet.ShootResult ReceiveShot(Coordinate coordinate) => 
         _coordinates.Contains(coordinate) ? Fleet.ShootResult.Hit : Fleet.ShootResult.Miss;
@@ -73,5 +119,8 @@ public record Fleet
 }
 
 public class ShipsAreOverlappingException : Exception
+{
+}
+public class FleetShipCoordinatesAreDisconnected : Exception
 {
 }
