@@ -1,6 +1,6 @@
 ﻿using Battleships.Console.Fleets;
 
-namespace Battleships.Console;
+namespace Battleships.Console.SoloMode;
 
 public record TakeAShotAt(Coordinate Coordinate);
 

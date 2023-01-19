@@ -1,5 +1,5 @@
-﻿using Battleships.Console;
-using Battleships.Console.Fleets;
+﻿using Battleships.Console.Fleets;
+using Battleships.Console.SoloMode;
 using FluentAssertions;
 
 namespace Battleships.UnitTests.SoloMode;
