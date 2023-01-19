@@ -46,6 +46,22 @@ public class GameStatesChangesTests
         state = state.HandleChange(new TakeAShotAt((3, 3)));
         state.Should().BeOfType<GameOverState>();
     }
+    
+    [Fact]
+    public void game_over_state_cannot_be_escaped()
+    {
+        var fleet = Fleet.Create(FleetShip.Create((0, 0)), 
+            FleetShip.Create((1, 1)),
+            FleetShip.Create((3, 3)));
+        
+        IGameState state = new GameOverState();
+
+        state = state.HandleChange(new TakeAShotAt((0, 0)));
+        state.Should().BeOfType<GameOverState>();
+        
+        state = state.HandleChange(new TakeAShotAt((2, 2)));
+        state.Should().BeOfType<GameOverState>();
+    }
 }
 
 public record TakeAShotAt(Coordinate Coordinate);
