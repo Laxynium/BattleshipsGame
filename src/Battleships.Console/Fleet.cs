@@ -41,11 +41,6 @@ public record FleetShip
 
     private static bool AreCoordinatesConnected(IReadOnlyCollection<Coordinate> allCoordinates)
     {
-        if (allCoordinates.Count == 1)
-        {
-            return true;
-        }
-
         var segment = new List<Coordinate>(){allCoordinates.First()};
         var queue = new Queue<Coordinate>(segment);
         while (queue.Count > 0)
