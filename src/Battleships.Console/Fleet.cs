@@ -23,24 +23,30 @@ public record FleetShip
 
     public static FleetShip Create(Coordinate coordinate, params Coordinate[] coordinates)
     {
-        var allCoordinates = new[] { coordinate }.Concat(coordinates).ToList();
+        var allCoordinates = new[] { coordinate }.Concat(coordinates).ToHashSet();
 
         if (!AreCoordinatesConnected(allCoordinates))
         {
             throw new FleetShipCoordinatesAreDisconnected();
         }
         
-        return new(allCoordinates);
+        return new FleetShip(allCoordinates);
     }
 
-    private static bool AreCoordinatesConnected(IReadOnlyList<Coordinate> allCoordinates)
+    public Fleet.ShootResult ReceiveShot(Coordinate coordinate) => 
+        _coordinates.Contains(coordinate) ? Fleet.ShootResult.Hit : Fleet.ShootResult.Miss;
+
+    public bool IsOverlappingWith(FleetShip another) => 
+        _coordinates.Overlaps(another._coordinates);
+
+    private static bool AreCoordinatesConnected(IReadOnlyCollection<Coordinate> allCoordinates)
     {
         if (allCoordinates.Count == 1)
         {
             return true;
         }
 
-        var segment = new List<Coordinate>(){allCoordinates[0]};
+        var segment = new List<Coordinate>(){allCoordinates.First()};
         var queue = new Queue<Coordinate>(segment);
         while (queue.Count > 0)
         {
@@ -61,12 +67,6 @@ public record FleetShip
 
         return segment.Count == allCoordinates.Count;
     }
-
-    public Fleet.ShootResult ReceiveShot(Coordinate coordinate) => 
-        _coordinates.Contains(coordinate) ? Fleet.ShootResult.Hit : Fleet.ShootResult.Miss;
-
-    public bool IsOverlappingWith(FleetShip another) => 
-        _coordinates.Overlaps(another._coordinates);
 }
 
 public record Fleet
