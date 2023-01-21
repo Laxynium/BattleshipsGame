@@ -13,11 +13,20 @@ public sealed class CoordinatesSet : ValueObject
         _set = set.ToHashSet();
     }
 
-    public static CoordinatesSet Create(Coordinates head, params Coordinates[] tail) => new(new[] { head }.Concat(tail));
+    public static CoordinatesSet Create(Coordinates head, params Coordinates[] tail)
+    {
+        
+        return new(new[] { head }.Concat(tail));
+    }
 
     public bool AreCoordinatesConnect()
     {
-        var connectedCoordinatesSets = new List<Coordinates> {_set.First()};
+        return AreCoordinatesConnect(_set);
+    }
+
+    private static bool AreCoordinatesConnect(IReadOnlyCollection<Coordinates> collection)
+    {
+        var connectedCoordinatesSets = new List<Coordinates> {collection.First()};
         var queue = new Queue<Coordinates>(connectedCoordinatesSets);
         while (queue.Count > 0)
         {
@@ -25,7 +34,7 @@ public sealed class CoordinatesSet : ValueObject
 
             var nextCoordinatesToVisit = coordinate
                 .GetNeighbourhood()
-                .Intersect(_set)
+                .Intersect(collection)
                 .Except(connectedCoordinatesSets)
                 .ToList();
             
@@ -37,9 +46,10 @@ public sealed class CoordinatesSet : ValueObject
             }
         }
 
-        return connectedCoordinatesSets.Count == _set.Count;
+        return connectedCoordinatesSets.Count == collection.Count;
     }
 
+    
     public static bool AreSomeOverlapping(params CoordinatesSet[] coordinatesSets) =>
         CartesianProduct(coordinatesSets)
             .Where(c => c.x != c.y)
