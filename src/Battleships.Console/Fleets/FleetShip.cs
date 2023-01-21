@@ -14,7 +14,7 @@ public record FleetShip
     {
         if (!coordinatesSet.AreCoordinatesConnect())
         {
-            throw new FleetShipCoordinatesAreDisconnectedException();
+            throw new CoordinatesAreDisconnectedException();
         }
         
         return new FleetShip(coordinatesSet.Set);

@@ -36,6 +36,6 @@ public class CreatingFleetShipTests
     public void cannot_create_ship_when_its_coordinates_are_disconnected()
     {
         var action = () => CreateShip((3, 2), (0,2));
-        action.Should().Throw<FleetShipCoordinatesAreDisconnectedException>();
+        action.Should().Throw<CoordinatesAreDisconnectedException>();
     }
 }
