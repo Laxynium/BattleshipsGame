@@ -46,7 +46,7 @@ public record FleetShip
             var coordinate = queue.Dequeue();
 
             var nextCoordinatesToVisit = coordinate
-                .GetNeighbours()
+                .GetNeighbourhood()
                 .Intersect(coordinatesSet)
                 .Except(connectedCoordinatesSets)
                 .ToList();
