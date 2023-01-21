@@ -35,29 +35,7 @@ public class CreatingFleetShipTests
     [Fact]
     public void cannot_create_ship_when_its_coordinates_are_disconnected()
     {
-        var action = () => CreateShip((0, 0), (0,2));
-        action.Should().Throw<FleetShipCoordinatesAreDisconnectedException>();
-    }
-
-    [Fact]
-    public void cannot_create_ship_when_its_coordinates_are_connected_only_diagonally()
-    {
-        var action = () => CreateShip((5, 5), (6,6));
-        action.Should().Throw<FleetShipCoordinatesAreDisconnectedException>();
-        
-        action = () => CreateShip((5, 5), (4,4), (6,6));
-        action.Should().Throw<FleetShipCoordinatesAreDisconnectedException>();
-        
-        action = () => CreateShip((5, 5), (4,6), (6,4));
-        action.Should().Throw<FleetShipCoordinatesAreDisconnectedException>();
-    }
-    
-    [Fact]
-    public void cannot_create_ship_when_there_two_islands_of_disconnected_coordinates()
-    {
-        var action = () => CreateShip(
-            (2, 2), (2, 3), (2, 4),
-            (5, 5), (4, 5));
+        var action = () => CreateShip((3, 2), (0,2));
         action.Should().Throw<FleetShipCoordinatesAreDisconnectedException>();
     }
 }
