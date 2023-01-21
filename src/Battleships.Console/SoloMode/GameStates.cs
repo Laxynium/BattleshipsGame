@@ -2,7 +2,7 @@
 
 namespace Battleships.Console.SoloMode;
 
-public record TakeAShotAt(Coordinate Coordinate);
+public record TakeAShotAt(Coordinates Coordinate);
 
 public interface IGameState
 {

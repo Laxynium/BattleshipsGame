@@ -2,14 +2,14 @@ namespace Battleships.Console.Fleets;
 
 public record FleetShip
 {
-    private readonly Dictionary<Coordinate, bool> _coordinates;
+    private readonly Dictionary<Coordinates, bool> _holes;
 
-    private FleetShip(IEnumerable<Coordinate> coordinates) => 
-        _coordinates = coordinates.ToDictionary(x=>x, _=> false);
+    private FleetShip(IEnumerable<Coordinates> coordinates) => 
+        _holes = coordinates.ToDictionary(x=>x, _=> false);
 
-    public static FleetShip Create(Coordinate coordinate, params Coordinate[] coordinates)
+    public static FleetShip Create(Coordinates head, params Coordinates[] tail)
     {
-        var allCoordinates = new[] { coordinate }.Concat(coordinates).ToHashSet();
+        var allCoordinates = new[] { head }.Concat(tail).ToHashSet();
 
         if (!AreCoordinatesConnected(allCoordinates))
         {
@@ -19,39 +19,39 @@ public record FleetShip
         return new FleetShip(allCoordinates);
     }
 
-    public ShootResult ReceiveShot(Coordinate coordinate)
+    public ShootResult ReceiveShot(Coordinates coordinate)
     {
-        if (!_coordinates.ContainsKey(coordinate))
+        if (!_holes.ContainsKey(coordinate))
         {
             return ShootResult.Miss;
         }
 
-        _coordinates[coordinate] = true;
+        _holes[coordinate] = true;
 
         return IsSunk() ? ShootResult.Sunk : ShootResult.Hit;
     }
 
     public bool IsOverlappingWith(FleetShip another) => 
-        _coordinates.Keys.ToHashSet().Overlaps(another._coordinates.Keys);
+        _holes.Keys.ToHashSet().Overlaps(another._holes.Keys);
 
     public bool IsSunk() => 
-        _coordinates.Values.All(x => x == true);
+        _holes.Values.All(x => x == true);
 
-    private static bool AreCoordinatesConnected(IReadOnlyCollection<Coordinate> allCoordinates)
+    private static bool AreCoordinatesConnected(IReadOnlyCollection<Coordinates> coordinatesSet)
     {
-        var connectedCoordinates = new List<Coordinate> {allCoordinates.First()};
-        var queue = new Queue<Coordinate>(connectedCoordinates);
+        var connectedCoordinatesSets = new List<Coordinates> {coordinatesSet.First()};
+        var queue = new Queue<Coordinates>(connectedCoordinatesSets);
         while (queue.Count > 0)
         {
             var coordinate = queue.Dequeue();
 
             var nextCoordinatesToVisit = coordinate
                 .GetNeighbours()
-                .Intersect(allCoordinates)
-                .Except(connectedCoordinates)
+                .Intersect(coordinatesSet)
+                .Except(connectedCoordinatesSets)
                 .ToList();
             
-            connectedCoordinates.AddRange(nextCoordinatesToVisit);
+            connectedCoordinatesSets.AddRange(nextCoordinatesToVisit);
             
             foreach (var nextCoordinate in nextCoordinatesToVisit)
             {
@@ -59,6 +59,6 @@ public record FleetShip
             }
         }
 
-        return connectedCoordinates.Count == allCoordinates.Count;
+        return connectedCoordinatesSets.Count == coordinatesSet.Count;
     }
 }

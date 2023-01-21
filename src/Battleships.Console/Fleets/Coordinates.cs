@@ -1,11 +1,11 @@
 namespace Battleships.Console.Fleets;
 
-public record Coordinate(int X, int Y)
+public record Coordinates(int X, int Y)
 {
-    public static implicit operator Coordinate((int x, int y) coordinate) =>
+    public static implicit operator Coordinates((int x, int y) coordinate) =>
         new(coordinate.x, coordinate.y);
 
-    public IEnumerable<Coordinate> GetNeighbours()
+    public IEnumerable<Coordinates> GetNeighbours()
     {
         yield return this with { X = X - 1 };
         yield return this with { X = X + 1 };

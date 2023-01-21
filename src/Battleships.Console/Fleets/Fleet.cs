@@ -23,11 +23,11 @@ public record Fleet
         return new(allShips);
     }
 
-    public ShootResult ReceiveShot(Coordinate coordinate)
+    public ShootResult ReceiveShot(Coordinates coordinates)
     {
         foreach (var ship in _ships)
         {
-            var result = ship.ReceiveShot(coordinate);
+            var result = ship.ReceiveShot(coordinates);
             if (result != ShootResult.Miss)
             {
                 return IsFleetSunk() ? ShootResult.FleetSunk : result;
