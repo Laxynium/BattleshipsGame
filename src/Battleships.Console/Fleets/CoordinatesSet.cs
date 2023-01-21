@@ -15,14 +15,19 @@ public sealed class CoordinatesSet : ValueObject
 
     public static CoordinatesSet Create(Coordinates head, params Coordinates[] tail)
     {
-        
-        return new(new[] { head }.Concat(tail));
+        var set = new[] { head }.Concat(tail).ToHashSet();
+        if (!AreCoordinatesConnect(set))
+        {
+            throw new CoordinatesAreDisconnectedException();
+        }
+        return new CoordinatesSet(set);
     }
 
-    public bool AreCoordinatesConnect()
-    {
-        return AreCoordinatesConnect(_set);
-    }
+
+    public static bool AreSomeOverlapping(params CoordinatesSet[] coordinatesSets) =>
+        CartesianProduct(coordinatesSets)
+            .Where(c => c.x != c.y)
+            .Any(c => c.x.IsOverlappingWith(c.y));
 
     private static bool AreCoordinatesConnect(IReadOnlyCollection<Coordinates> collection)
     {
@@ -49,21 +54,15 @@ public sealed class CoordinatesSet : ValueObject
         return connectedCoordinatesSets.Count == collection.Count;
     }
 
-    
-    public static bool AreSomeOverlapping(params CoordinatesSet[] coordinatesSets) =>
-        CartesianProduct(coordinatesSets)
-            .Where(c => c.x != c.y)
-            .Any(c => c.x.IsOverlappingWith(c.y));
-
     private bool IsOverlappingWith(CoordinatesSet another) => 
         _set.Overlaps(another._set);
-
+    
     protected override IEnumerable<object> GetEqualityComponents()
     {
         var sorted = new SortedSet<Coordinates>(_set);
         return sorted;
     }
-
+    
     private static IEnumerable<(T x, T y)> CartesianProduct<T>(IList<T> items) => 
         from x in items 
         from y in items 

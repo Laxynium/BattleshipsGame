@@ -12,11 +12,6 @@ public record FleetShip
 
     public static FleetShip Create(CoordinatesSet coordinatesSet)
     {
-        if (!coordinatesSet.AreCoordinatesConnect())
-        {
-            throw new CoordinatesAreDisconnectedException();
-        }
-        
         return new FleetShip(coordinatesSet.Set);
     }
 
@@ -31,9 +26,6 @@ public record FleetShip
 
         return IsSunk() ? ShootResult.Sunk : ShootResult.Hit;
     }
-
-    public bool IsOverlappingWith(FleetShip another) => 
-        _holes.Keys.ToHashSet().Overlaps(another._holes.Keys);
 
     public bool IsSunk() => 
         _holes.Values.All(x => x == true);
