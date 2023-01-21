@@ -7,6 +7,9 @@ public record FleetShip
     private FleetShip(IEnumerable<Coordinates> coordinates) => 
         _holes = coordinates.ToDictionary(x=>x, _=> false);
 
+    public CoordinatesSet CoordinatesSet =>
+        CoordinatesSet.Create(_holes.Keys.First(), _holes.Keys.Skip(1).ToArray());
+
     public static FleetShip Create(CoordinatesSet coordinatesSet)
     {
         if (!coordinatesSet.AreCoordinatesConnect())

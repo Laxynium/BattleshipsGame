@@ -1,20 +1,37 @@
+using CSharpFunctionalExtensions;
+
 namespace Battleships.Console.Fleets;
 
-public record Coordinates(int X, int Y)
+public class Coordinates : ValueObject
 {
+    public int X { get; }
+    public int Y { get; }
+    
+    public Coordinates(int x, int y)
+    {
+        Y = y;
+        X = x;
+    }
+
     public static implicit operator Coordinates((int x, int y) coordinate) =>
         new(coordinate.x, coordinate.y);
 
     public IEnumerable<Coordinates> GetNeighbourhood()
     {
-        yield return this with { X = X - 1 };
-        yield return this with { X = X + 1 };
-        yield return this with { Y = Y - 1 };
-        yield return this with { Y = Y + 1 };
+        yield return new Coordinates(X - 1, Y);
+        yield return new Coordinates(X + 1, Y);
+        yield return new Coordinates(X, Y - 1);
+        yield return new Coordinates(X, Y + 1);
+    }
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return X;
+        yield return Y;
     }
 }
 
-public class CoordinatesSet
+public sealed class CoordinatesSet : ValueObject
 {
     private readonly HashSet<Coordinates> _set;
 
@@ -51,4 +68,23 @@ public class CoordinatesSet
 
         return connectedCoordinatesSets.Count == _set.Count;
     }
+
+    public static bool AreSomeOverlapping(params CoordinatesSet[] coordinatesSets) =>
+        CartesianProduct(coordinatesSets)
+            .Where(c => c.x != c.y)
+            .Any(c => c.x.IsOverlappingWith(c.y));
+
+    private bool IsOverlappingWith(CoordinatesSet another) => 
+        _set.Overlaps(another._set);
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        var sorted = new SortedSet<Coordinates>(_set);
+        return sorted;
+    }
+
+    private static IEnumerable<(T x, T y)> CartesianProduct<T>(IList<T> items) => 
+        from x in items 
+        from y in items 
+        select (x, y);
 }

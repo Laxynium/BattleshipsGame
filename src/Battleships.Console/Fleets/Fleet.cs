@@ -11,15 +11,15 @@ public record Fleet
     {
         var allShips = new[] { ship }.Concat(ships).ToList();
 
-        var areThereOverlappingShips = CartesianProduct(allShips)
-            .Where(c => c.x != c.y)
-            .Any(c => c.x.IsOverlappingWith(c.y));
+        var areThereOverlappingShips = CoordinatesSet.AreSomeOverlapping(allShips
+            .Select(x => x.CoordinatesSet)
+            .ToArray());
 
         if (areThereOverlappingShips)
         {
             throw new ShipsAreOverlappingException();
         }
-        
+
         return new(allShips);
     }
 
