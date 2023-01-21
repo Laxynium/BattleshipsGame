@@ -35,20 +35,20 @@ public class CreatingFleetShipTests
     public void cannot_create_ship_when_its_coordinates_are_disconnected()
     {
         var action = () => FleetShip.Create((0, 0), (0,2));
-        action.Should().Throw<FleetShipCoordinatesAreDisconnected>();
+        action.Should().Throw<FleetShipCoordinatesAreDisconnectedException>();
     }
 
     [Fact]
     public void cannot_create_ship_when_its_coordinates_are_connected_only_diagonally()
     {
         var action = () => FleetShip.Create((5, 5), (6,6));
-        action.Should().Throw<FleetShipCoordinatesAreDisconnected>();
+        action.Should().Throw<FleetShipCoordinatesAreDisconnectedException>();
         
         action = () => FleetShip.Create((5, 5), (4,4), (6,6));
-        action.Should().Throw<FleetShipCoordinatesAreDisconnected>();
+        action.Should().Throw<FleetShipCoordinatesAreDisconnectedException>();
         
         action = () => FleetShip.Create((5, 5), (4,6), (6,4));
-        action.Should().Throw<FleetShipCoordinatesAreDisconnected>();
+        action.Should().Throw<FleetShipCoordinatesAreDisconnectedException>();
     }
     
     [Fact]
@@ -57,7 +57,7 @@ public class CreatingFleetShipTests
         var action = () => FleetShip.Create(
             (2, 2), (2, 3), (2, 4),
             (5, 5), (4, 5));
-        action.Should().Throw<FleetShipCoordinatesAreDisconnected>();
+        action.Should().Throw<FleetShipCoordinatesAreDisconnectedException>();
     }
     
 }

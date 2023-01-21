@@ -13,7 +13,7 @@ public record FleetShip
 
         if (!AreCoordinatesConnected(allCoordinates))
         {
-            throw new FleetShipCoordinatesAreDisconnected();
+            throw new FleetShipCoordinatesAreDisconnectedException();
         }
         
         return new FleetShip(allCoordinates);
