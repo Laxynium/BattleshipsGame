@@ -7,7 +7,7 @@ namespace Battleships.UnitTests.Matches;
 public class MatchesTests
 {
     [Fact]
-    public void initial_state_allows_to_shoot_a_selected_target()
+    public void initial_state_is_player_turn_state_which_allows_to_shoot_a_selected_target()
     {
         var fleet = Fleet.Create(FleetShip.Create(CoordinatesSet.Create((3, 3), (3, 4))));
         var match = new Match(fleet);
@@ -17,4 +17,57 @@ public class MatchesTests
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().ContainEquivalentOf(new ShootMissedEvent((0, 0)));
     }
+
+    [Fact]
+    public void hitting_a_ship_in_player_turn_state()
+    {
+        var fleet = Fleet.Create(FleetShip.Create(CoordinatesSet.Create((3, 3), (3, 4))));
+        var match = new Match(fleet);
+
+        var result = match.Handle(new ShootATarget((3, 3)));
+
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().ContainEquivalentOf(new ShootHitShipEvent((3, 3)));
+    }
+    
+    [Fact]
+    public void sinking_a_ship_in_player_turn_state()
+    {
+        var fleet = Fleet.Create(
+            FleetShip.Create(CoordinatesSet.Create((3, 3), (3, 4))),
+            FleetShip.Create(CoordinatesSet.Create((1, 1))));
+        var match = new Match(fleet);
+
+        var result = match.Handle(new ShootATarget((1, 1)));
+
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().ContainEquivalentOf(new ShootSunkShipEvent((1, 1)));
+    }
+    
+    [Fact]
+    public void sinking_a_fleet_in_player_turn_state()
+    {
+        var fleet = Fleet.Create(
+            FleetShip.Create(CoordinatesSet.Create((3, 4))));
+        var match = new Match(fleet);
+
+        var result = match.Handle(new ShootATarget((3, 4)));
+
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().ContainEquivalentOf(new ShootSunkFleetEvent((3, 4)));
+    }
+
+    [Fact]
+    public void missing_a_shoot_in_player_turn_state()
+    {
+        var fleet = Fleet.Create(
+            FleetShip.Create(CoordinatesSet.Create((3, 4),(4,4))));
+        var match = new Match(fleet);
+
+        var result = match.Handle(new ShootATarget((3, 3)));
+
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().ContainEquivalentOf(new ShootMissedEvent((3, 3)));
+    }
+    
 }

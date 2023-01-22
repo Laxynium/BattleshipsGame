@@ -8,6 +8,9 @@ public interface IMatchEvent
 }
 
 public sealed record ShootMissedEvent(Coordinates Coordinates) : IMatchEvent;
+public sealed record ShootHitShipEvent(Coordinates Coordinates) : IMatchEvent;
+public sealed record ShootSunkShipEvent(Coordinates Coordinates) : IMatchEvent;
+public sealed record ShootSunkFleetEvent(Coordinates Coordinates) : IMatchEvent;
 
 public interface IMatchCommand
 {
@@ -26,9 +29,41 @@ public class Match
 
     public Result<IReadOnlyCollection<IMatchEvent>> Handle(IMatchCommand command)
     {
-        return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>
+        if (command is ShootATarget shootATarget)
         {
-            new ShootMissedEvent((0, 0))
-        });
+            var result = _fleet.ReceiveShot(shootATarget.Coordinates);
+
+            if (result == ShootResult.Hit)
+            {
+                return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>
+                {
+                    new ShootHitShipEvent(shootATarget.Coordinates)
+                });    
+
+            }
+
+            if (result == ShootResult.Sunk)
+            {
+                return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>
+                {
+                    new ShootSunkShipEvent(shootATarget.Coordinates)
+                });  
+            }
+            
+            if (result == ShootResult.FleetSunk)
+            {
+                return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>
+                {
+                    new ShootSunkFleetEvent(shootATarget.Coordinates)
+                });  
+            }
+
+            return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>
+            {
+                new ShootMissedEvent((shootATarget.Coordinates))
+            });    
+        }
+
+        return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>());
     }
 }
