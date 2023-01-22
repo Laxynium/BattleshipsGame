@@ -136,4 +136,37 @@ public class GameFacadeTests
         cockpit.Logs.Should().ContainInOrder(
             new ShotLog("F5", "hit", "3"));
     }
+
+    [Fact]
+    public void match_cockpit_matches_the_size_specified_in_configuration()
+    {
+        var shipBlueprintsStock = ShipBlueprintsStock.Create(
+            ("1", ShipBlueprint.FromText("-----")),
+            ("2", ShipBlueprint.FromText("----")),
+            ("3", ShipBlueprint.FromText("----")));
+        var matchConfiguration = new MatchConfiguration(
+            new GridConstrains(5, 5), shipBlueprintsStock);
+
+        IFleetArranger arranger = new FixedFleetArranger(new []
+        {
+            (new FleetShipId("1"), new []{"B1", "B2", "B3", "B4", "B5"}),
+            (new FleetShipId("2"), new []{"A1", "A2", "A3", "A4"}),
+            (new FleetShipId("3"), new []{"C1", "C2", "C3", "C4"}),
+        });
+        
+        var facade = new GameFacade(matchConfiguration, arranger);
+        facade.StartANewMatch();
+        
+        var cockpit = facade.GetMatchCockpit();
+        cockpit.TargetGrid.Should().BeEquivalentTo(TargetGrid.FromTextRepresentation(new[]
+        {
+            "x 1 2 3 4 5",
+            "A _ _ _ _ _",
+            "B _ _ _ _ _",
+            "C _ _ _ _ _",
+            "D _ _ _ _ _",
+            "E _ _ _ _ _"
+        }));
+        cockpit.Logs.Should().BeEmpty();
+    }
 }
