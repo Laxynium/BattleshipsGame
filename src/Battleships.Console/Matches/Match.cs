@@ -8,9 +8,9 @@ public interface IMatchEvent
 }
 
 public sealed record ShootMissedEvent(Coordinates Coordinates) : IMatchEvent;
-public sealed record ShootHitShipEvent(Coordinates Coordinates) : IMatchEvent;
-public sealed record ShootSunkShipEvent(Coordinates Coordinates) : IMatchEvent;
-public sealed record ShootSunkFleetEvent(Coordinates Coordinates) : IMatchEvent;
+public sealed record ShootHitShipEvent(Coordinates Coordinates, FleetShipId FleetShipId) : IMatchEvent;
+public sealed record ShootSunkShipEvent(Coordinates Coordinates, FleetShipId FleetShipId) : IMatchEvent;
+public sealed record ShootSunkFleetEvent(Coordinates Coordinates, FleetShipId FleetShipId) : IMatchEvent;
 
 public interface IMatchCommand
 {
@@ -21,7 +21,7 @@ public sealed record ShootATarget(Coordinates Coordinates) : IMatchCommand;
 public class Match
 {
     private readonly Fleet _fleet;
-    private bool _gameOver;
+    private bool _matchOver;
 
     public Match(Fleet fleet)
     {
@@ -30,7 +30,7 @@ public class Match
 
     public Result<IReadOnlyCollection<IMatchEvent>> Handle(IMatchCommand command)
     {
-        if (_gameOver)
+        if (_matchOver)
         {
             return Result.Failure<IReadOnlyCollection<IMatchEvent>>("Match has ended, cannot accept any more commands");
         }
@@ -44,7 +44,7 @@ public class Match
 
         if (matchEvent is ShootSunkFleetEvent)
         {
-            _gameOver = true;
+            _matchOver = true;
         }
         
         return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>
@@ -56,9 +56,9 @@ public class Match
     private IMatchEvent ToMatchEvent(ShootResult shootResult, Coordinates coordinates) =>
         shootResult switch
         {
-            ShootResult.FleetSunk => new ShootSunkFleetEvent(coordinates),
-            ShootResult.Sunk => new ShootSunkShipEvent(coordinates),
-            ShootResult.Hit => new ShootHitShipEvent(coordinates),
+            ShootResult.FleetSunk => new ShootSunkFleetEvent(coordinates,"1"),
+            ShootResult.Sunk => new ShootSunkShipEvent(coordinates,"1"),
+            ShootResult.Hit => new ShootHitShipEvent(coordinates,"1"),
             ShootResult.Miss => new ShootMissedEvent(coordinates),
             _ => throw new ArgumentOutOfRangeException(nameof(shootResult), shootResult, null)
         };

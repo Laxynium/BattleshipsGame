@@ -27,7 +27,7 @@ public class MatchesTests
         var result = match.Handle(new ShootATarget((3, 3)));
 
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().ContainEquivalentOf(new ShootHitShipEvent((3, 3)));
+        result.Value.Should().ContainEquivalentOf(new ShootHitShipEvent((3, 3),"1"));
     }
     
     [Fact]
@@ -41,7 +41,7 @@ public class MatchesTests
         var result = match.Handle(new ShootATarget((1, 1)));
 
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().ContainEquivalentOf(new ShootSunkShipEvent((1, 1)));
+        result.Value.Should().ContainEquivalentOf(new ShootSunkShipEvent((1, 1), "1"));
     }
     
     [Fact]
@@ -54,7 +54,7 @@ public class MatchesTests
         var result = match.Handle(new ShootATarget((3, 4)));
 
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().ContainEquivalentOf(new ShootSunkFleetEvent((3, 4)));
+        result.Value.Should().ContainEquivalentOf(new ShootSunkFleetEvent((3, 4),"1"));
     }
 
     [Fact]
