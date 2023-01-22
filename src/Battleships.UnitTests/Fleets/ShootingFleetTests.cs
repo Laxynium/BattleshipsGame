@@ -9,14 +9,14 @@ public class ShootingFleetTests
     [Fact]
     public void hitting_ship_with_one_coordinate_results_in_sunk()
     {
-        Fleet.Create(CreateShip((3, 3)), CreateShip((1,1)))
+        Fleet.Create(CreateShip("1",(3, 3)), CreateShip("2",(1,1)))
             .ReceiveShot((3, 3)).Should().Be(ShootResult.ASunk(new FleetShipId("1")));
 
-        Fleet.Create(CreateShip((4, 4)), CreateShip((1,1)))
+        Fleet.Create(CreateShip("1",(4, 4)), CreateShip("2",(1,1)))
             .ReceiveShot((4, 4)).Should().Be(ShootResult.ASunk(new FleetShipId("1")));
 
-        Fleet.Create(CreateShip((5, 7)), CreateShip((1,1)))
-            .ReceiveShot((5, 7)).Should().Be(ShootResult.ASunk(new FleetShipId("1")));
+        Fleet.Create(CreateShip("1",(5, 7)), CreateShip("2",(1,1)))
+            .ReceiveShot((1, 1)).Should().Be(ShootResult.ASunk(new FleetShipId("2")));
     }
 
     [Fact]
