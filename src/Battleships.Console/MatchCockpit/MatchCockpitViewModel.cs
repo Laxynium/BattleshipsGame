@@ -1,4 +1,5 @@
-﻿using Battleships.Console.Matches;
+﻿using Battleships.Console.Fleets;
+using Battleships.Console.Matches;
 
 namespace Battleships.Console.MatchCockpit;
 
@@ -15,26 +16,22 @@ public class MatchCockpitUpdater :
         _matchCockpitViewModel = matchCockpitViewModel;
     }
 
-    public void Handle(ShootSunkFleetEvent @event)
-    {
-        
-    }
+    public void Handle(ShootSunkFleetEvent @event) =>
+        PlaceAPeg(@event.Coordinates, Cell.RedPeg);
 
-    public void Handle(ShootSunkShipEvent @event)
-    {
-        
-    }
+    public void Handle(ShootSunkShipEvent @event) =>
+        PlaceAPeg(@event.Coordinates, Cell.RedPeg);
 
-    public void Handle(ShootHitShipEvent @event)
-    {
-        var (x, y) = @event.Coordinates;
-        _matchCockpitViewModel.TargetGrid.Cells[x][y] = Cell.RedPeg;
-    }
+    public void Handle(ShootHitShipEvent @event) =>
+        PlaceAPeg(@event.Coordinates, Cell.RedPeg);
 
-    public void Handle(ShootMissedEvent @event)
+    public void Handle(ShootMissedEvent @event) =>
+        PlaceAPeg(@event.Coordinates, Cell.WhitePeg);
+    
+    private void PlaceAPeg(Coordinates coordinates, Cell peg)
     {
-        var (x, y) = @event.Coordinates;
-        _matchCockpitViewModel.TargetGrid.Cells[x][y] = Cell.WhitePeg;
+        var (x, y) = coordinates;
+        _matchCockpitViewModel.TargetGrid.Cells[y][x] = peg;
     }
 }
 public enum Cell{None, WhitePeg, RedPeg}

@@ -13,20 +13,20 @@ public class UpdatingMatchCockpitTests
         var matchCockpit = new MatchCockpitViewModel(ATargetGrid(new[]
         {
             "x 1 2 3 4",
-            "A _ _ _ _",
-            "B _ _ _ _",
+            "A _ _ @ _",
+            "B _ _ @ _",
             "C _ _ _ _",
             "D _ _ _ _",
         }));
         var matchCockpitUpdater = new MatchCockpitUpdater(matchCockpit);
         
-        matchCockpitUpdater.Handle(new ShootMissedEvent(AFleetCoordinates("A1")));
+        matchCockpitUpdater.Handle(new ShootMissedEvent(AFleetCoordinates("B4")));
 
         matchCockpit.TargetGrid.Should().BeEquivalentTo(ATargetGrid(new[]
         {
             "x 1 2 3 4",
-            "A @ _ _ _",
-            "B _ _ _ _",
+            "A _ _ @ _",
+            "B _ _ @ @",
             "C _ _ _ _",
             "D _ _ _ _",
         }));
@@ -38,22 +38,72 @@ public class UpdatingMatchCockpitTests
         var matchCockpit = new MatchCockpitViewModel(ATargetGrid(new[]
         {
             "x 1 2 3 4",
-            "A _ _ _ _",
+            "A _ ! ! _",
             "B _ _ _ _",
             "C _ _ _ _",
             "D _ _ _ _",
         }));
         var matchCockpitUpdater = new MatchCockpitUpdater(matchCockpit);
         
-        matchCockpitUpdater.Handle(new ShootHitShipEvent(AFleetCoordinates("B3"),"1"));
+        matchCockpitUpdater.Handle(new ShootHitShipEvent(AFleetCoordinates("D1"),"1"));
 
         matchCockpit.TargetGrid.Should().BeEquivalentTo(ATargetGrid(new[]
         {
             "x 1 2 3 4",
-            "A _ _ _ _",
-            "B _ _ ! _",
+            "A _ ! ! _",
+            "B _ _ _ _",
+            "C _ _ _ _",
+            "D ! _ _ _",
+        }));
+    }
+    
+    [Fact]
+    public void shot_sunk_ship_event_is_visible_as_red_peg_on_target_board()
+    {
+        var matchCockpit = new MatchCockpitViewModel(ATargetGrid(new[]
+        {
+            "x 1 2 3 4",
+            "A _ ! _ _",
+            "B _ ! _ _",
             "C _ _ _ _",
             "D _ _ _ _",
+        }));
+        var matchCockpitUpdater = new MatchCockpitUpdater(matchCockpit);
+        
+        matchCockpitUpdater.Handle(new ShootSunkShipEvent(AFleetCoordinates("C2"),"1"));
+
+        matchCockpit.TargetGrid.Should().BeEquivalentTo(ATargetGrid(new[]
+        {
+            "x 1 2 3 4",
+            "A _ ! _ _",
+            "B _ ! _ _",
+            "C _ ! _ _",
+            "D _ _ _ _",
+        }));
+    }
+    
+    [Fact]
+    public void shot_sunk_fleet_event_is_visible_as_red_peg_on_target_board()
+    {
+        var matchCockpit = new MatchCockpitViewModel(ATargetGrid(new[]
+        {
+            "x 1 2 3 4",
+            "A _ ! _ _",
+            "B _ ! _ _",
+            "C _ _ _ _",
+            "D _ _ _ _",
+        }));
+        var matchCockpitUpdater = new MatchCockpitUpdater(matchCockpit);
+        
+        matchCockpitUpdater.Handle(new ShootSunkFleetEvent(AFleetCoordinates("D1"),"1"));
+
+        matchCockpit.TargetGrid.Should().BeEquivalentTo(ATargetGrid(new[]
+        {
+            "x 1 2 3 4",
+            "A _ ! _ _",
+            "B _ ! _ _",
+            "C _ _ _ _",
+            "D ! _ _ _",
         }));
     }
 
