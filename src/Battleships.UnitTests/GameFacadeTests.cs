@@ -1,6 +1,7 @@
 ﻿using Battleships.Console;
 using Battleships.Console.Fleets;
 using Battleships.Console.MatchCockpit;
+using Battleships.Console.MatchConfigurations;
 using FluentAssertions;
 using static Battleships.UnitTests.Builders.FleetShipBuilder;
 
@@ -11,10 +12,19 @@ public class GameFacadeTests
     [Fact]
     public void empty_grid_and_no_logs_after_starting_a_game()
     {
-        var fleet = Fleet.Create(
-            CreateShip("1",(3,3),(3,4),(3,5)),
-            CreateShip("2", (1,2),(2,2)));
-        var facade = new GameFacade(fleet);
+        var shipBlueprintsStock = ShipBlueprintsStock.Create(
+            ("1", ShipBlueprint.FromText("---")),
+            ("2", ShipBlueprint.FromText("--")));
+        var matchConfiguration = new MatchConfiguration(
+            new GridConstrains(10, 10), shipBlueprintsStock);
+
+        IFleetArranger arranger = new FixedFleetArranger(new []
+        {
+            (new FleetShipId("1"), new []{"D4", "E4", "F4"}),
+            (new FleetShipId("2"), new []{"C2", "C3"})
+        });
+        
+        var facade = new GameFacade(matchConfiguration, arranger);
 
         facade.StartANewMatch();
 
@@ -36,14 +46,27 @@ public class GameFacadeTests
         cockpit.Logs.Should().BeEmpty();
     }
     
-    
     [Fact]
     public void after_starting_a_game_player_can_shoot_a_target()
     {
+        var shipBlueprintsStock = ShipBlueprintsStock.Create(
+            ("1", ShipBlueprint.FromText("-----")),
+            ("2", ShipBlueprint.FromText("----")),
+            ("3", ShipBlueprint.FromText("----")));
+        var matchConfiguration = new MatchConfiguration(
+            new GridConstrains(10, 10), shipBlueprintsStock);
+
+        IFleetArranger arranger = new FixedFleetArranger(new []
+        {
+            (new FleetShipId("1"), new []{"B1", "B2", "B3", "B4", "B5"}),
+            (new FleetShipId("2"), new []{"E2", "D2", "E2", "F2"}),
+            (new FleetShipId("3"), new []{"C5", "D5", "E5", "F5"}),
+        });
+        
         var fleet = Fleet.Create(
             CreateShip("1",(4,3),(4,4),(4,5)),
             CreateShip("2", (1,2),(2,2)));
-        var facade = new GameFacade(fleet);
+        var facade = new GameFacade(matchConfiguration, arranger);
         facade.StartANewMatch();
 
         facade.ShootATarget("E4");
@@ -74,16 +97,27 @@ public class GameFacadeTests
     [Fact]
     public void starting_a_new_game_restarts_grid_and_fleet_state()
     {
-        var fleet = Fleet.Create(
-            CreateShip("1",(4,3),(4,4),(4,5)),
-            CreateShip("2", (1,2),(2,2)));
-        var facade = new GameFacade(fleet);
+        var shipBlueprintsStock = ShipBlueprintsStock.Create(
+            ("1", ShipBlueprint.FromText("-----")),
+            ("2", ShipBlueprint.FromText("----")),
+            ("3", ShipBlueprint.FromText("----")));
+        var matchConfiguration = new MatchConfiguration(
+            new GridConstrains(10, 10), shipBlueprintsStock);
+
+        IFleetArranger arranger = new FixedFleetArranger(new []
+        {
+            (new FleetShipId("1"), new []{"B1", "B2", "B3", "B4", "B5"}),
+            (new FleetShipId("2"), new []{"C2", "D2", "E2", "F2"}),
+            (new FleetShipId("3"), new []{"C5", "D5", "E5", "F5"}),
+        });
+        
+        var facade = new GameFacade(matchConfiguration, arranger);
         facade.StartANewMatch();
 
-        facade.ShootATarget("E4");
+        facade.ShootATarget("C5");
         facade.ShootATarget("D5");
         facade.ShootATarget("E5");
-
+        
         facade.StartANewMatch();
         facade.ShootATarget("F5");
         

@@ -1,25 +1,28 @@
-﻿using Battleships.Console.Fleets;
-using Battleships.Console.MatchCockpit;
+﻿using Battleships.Console.MatchCockpit;
+using Battleships.Console.MatchConfigurations;
 using Battleships.Console.Matches;
 
 namespace Battleships.Console;
 
 public class GameFacade
 {
-    private readonly Fleet _originalFleet;
-    
+    private readonly MatchConfiguration _matchConfiguration;
+    private readonly IFleetArranger _fleetArranger;
+
     private Match? _match;
     private MatchCockpitViewModel? _cockpitViewModel;
     private MatchCockpitUpdater? _matchCockpitUpdater;
-
-    public GameFacade(Fleet fleet)
+    
+    public GameFacade(MatchConfiguration matchConfiguration, IFleetArranger fleetArranger)
     {
-        _originalFleet = fleet;
+        _matchConfiguration = matchConfiguration;
+        _fleetArranger = fleetArranger;
     }
-
+    
     public void StartANewMatch()
     {
-        _match = new Match(_originalFleet.CreateACopy());
+        var fleet = _matchConfiguration.CreateFleet(_fleetArranger);
+        _match = new Match(fleet);
         _cockpitViewModel = EmptyMatchCockpit();
         _matchCockpitUpdater = new MatchCockpitUpdater(_cockpitViewModel);
     }
