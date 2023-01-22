@@ -103,6 +103,6 @@ public class GameFacadeTests
             "J _ _ _ _ _ _ _ _ _ _",
         }));
         cockpit.Logs.Should().ContainInOrder(
-            new ShotLog("E6", "hit", "1"));
+            new ShotLog("F5", "hit", "1"));
     }
 }

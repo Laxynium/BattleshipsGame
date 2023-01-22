@@ -42,6 +42,11 @@ public record Fleet
         return new ShotResult.Miss();
     }
 
+    public Fleet CreateACopy()
+    {
+        return new Fleet(_ships.Select(s => s.Copy()));
+    }
+    
     private bool IsFleetSunk()
     {
         return _ships.All(x => x.IsSunk());

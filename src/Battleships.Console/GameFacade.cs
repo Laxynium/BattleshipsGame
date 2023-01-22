@@ -19,7 +19,7 @@ public class GameFacade
 
     public void StartANewMatch()
     {
-        _match = new Match(_originalFleet);
+        _match = new Match(_originalFleet.CreateACopy());
         _cockpitViewModel = EmptyMatchCockpit();
         _matchCockpitUpdater = new MatchCockpitUpdater(_cockpitViewModel);
     }
