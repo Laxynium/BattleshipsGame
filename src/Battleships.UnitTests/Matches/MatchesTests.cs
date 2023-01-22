@@ -84,4 +84,20 @@ public class MatchesTests
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Contain("Match has ended");
     }
+
+    [Fact]
+    public void match_can_be_played_as_long_as_there_are_some_not_sunk_ships()
+    {
+        var fleet = Fleet.Create(
+            CreateShip("1", (5, 5)),
+            CreateShip("2", (6, 6)),
+            CreateShip("3", (7, 7)));
+        var match = new Match(fleet);
+
+        match.Handle(new ShootATarget((5, 5))).IsSuccess.Should().BeTrue();
+        match.Handle(new ShootATarget((6, 6))).IsSuccess.Should().BeTrue();
+        match.Handle(new ShootATarget((7, 7))).IsSuccess.Should().BeTrue();
+        
+        match.Handle(new ShootATarget((4, 4))).IsSuccess.Should().BeFalse();
+    }
 }
