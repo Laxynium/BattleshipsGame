@@ -14,8 +14,13 @@ public class GridCoordinates : ValueObject
         ColumnCoord = columnCoord;
     }
 
-    public static Result<GridCoordinates> Parse(string text)
+    public static Result<GridCoordinates> Parse(string? text)
     {
+        if (text is null || text.Length < 2)
+        {
+            return Result.Failure<GridCoordinates>("Invalid format of coords");
+        }
+        
         var rowCoord = text[0];
         if (rowCoord is < 'A' or > 'Z')
         {

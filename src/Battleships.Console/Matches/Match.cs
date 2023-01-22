@@ -13,6 +13,8 @@ public class Match
         _fleet = fleet;
     }
 
+    public string State => _matchOver ? "match_over" : "player_turn";
+
     public Result<IReadOnlyCollection<IMatchEvent>> Handle(IMatchCommand command)
     {
         if (_matchOver)

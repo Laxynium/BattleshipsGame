@@ -46,6 +46,14 @@ public class GameFacade
         
         var coordinates = GridCoordinates.From(gridCoordinates).ToFleetCoords();
 
+        if (coordinates.X >= _matchConfiguration.Constrains.Width ||
+            coordinates.Y >= _matchConfiguration.Constrains.Height ||
+            coordinates.X < 0||
+            coordinates.Y <0)
+        {
+            throw new ArgumentException("Provided coords are out of grid constraints");
+        }
+        
         var result = _match.Handle(new ShootATarget(coordinates));
         if (result.IsFailure)
         {
