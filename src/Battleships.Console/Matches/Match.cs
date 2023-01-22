@@ -40,36 +40,26 @@ public class Match
         
         var result = _fleet.ReceiveShot(shootATarget.Coordinates);
 
-        if (result == ShootResult.Hit)
-        {
-            return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>
-            {
-                new ShootHitShipEvent(shootATarget.Coordinates)
-            });    
+        var matchEvent = ToMatchEvent(result, shootATarget.Coordinates);
 
-        }
-
-        if (result == ShootResult.Sunk)
-        {
-            return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>
-            {
-                new ShootSunkShipEvent(shootATarget.Coordinates)
-            });  
-        }
-            
-        if (result == ShootResult.FleetSunk)
+        if (matchEvent is ShootSunkFleetEvent)
         {
             _gameOver = true;
-            return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>
-            {
-                new ShootSunkFleetEvent(shootATarget.Coordinates)
-            });  
         }
-
+        
         return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>
         {
-            new ShootMissedEvent((shootATarget.Coordinates))
+            matchEvent
         });
-
     }
+
+    private IMatchEvent ToMatchEvent(ShootResult shootResult, Coordinates coordinates) =>
+        shootResult switch
+        {
+            ShootResult.FleetSunk => new ShootSunkFleetEvent(coordinates),
+            ShootResult.Sunk => new ShootSunkShipEvent(coordinates),
+            ShootResult.Hit => new ShootHitShipEvent(coordinates),
+            ShootResult.Miss => new ShootMissedEvent(coordinates),
+            _ => throw new ArgumentOutOfRangeException(nameof(shootResult), shootResult, null)
+        };
 }
