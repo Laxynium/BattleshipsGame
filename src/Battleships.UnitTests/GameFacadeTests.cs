@@ -47,6 +47,8 @@ public class GameFacadeTests
         facade.StartANewMatch();
 
         facade.ShootATarget("E4");
+        facade.ShootATarget("D5");
+        facade.ShootATarget("E5");
 
         var cockpit = facade.GetMatchCockpit();
         cockpit.TargetGrid.Should().BeEquivalentTo(TargetGrid.FromTextRepresentation(new[]
@@ -55,35 +57,52 @@ public class GameFacadeTests
             "A _ _ _ _ _ _ _ _ _ _",
             "B _ _ _ _ _ _ _ _ _ _",
             "C _ _ _ _ _ _ _ _ _ _",
-            "D _ _ _ _ _ _ _ _ _ _",
-            "E _ _ _ @ _ _ _ _ _ _",
+            "D _ _ _ _ ! _ _ _ _ _",
+            "E _ _ _ @ ! _ _ _ _ _",
             "F _ _ _ _ _ _ _ _ _ _",
             "G _ _ _ _ _ _ _ _ _ _",
             "H _ _ _ _ _ _ _ _ _ _",
             "I _ _ _ _ _ _ _ _ _ _",
             "J _ _ _ _ _ _ _ _ _ _",
         }));
-        cockpit.Logs.Should().Contain(
+        cockpit.Logs.Should().ContainInOrder(
+            new ShotLog("E5","hit","1"),
+            new ShotLog("D5", "hit", "1"),
             new ShotLog("E4","miss",null));
-        
-        
+    }
+
+    [Fact]
+    public void starting_a_new_game_restarts_grid_and_fleet_state()
+    {
+        var fleet = Fleet.Create(
+            CreateShip("1",(4,3),(4,4),(4,5)),
+            CreateShip("2", (1,2),(2,2)));
+        var facade = new GameFacade(fleet);
+        facade.StartANewMatch();
+
+        facade.ShootATarget("E4");
         facade.ShootATarget("D5");
-        cockpit = facade.GetMatchCockpit();
+        facade.ShootATarget("E5");
+
+        facade.StartANewMatch();
+        facade.ShootATarget("F5");
+        
+        var cockpit = facade.GetMatchCockpit();
         cockpit.TargetGrid.Should().BeEquivalentTo(TargetGrid.FromTextRepresentation(new[]
         {
             "x 1 2 3 4 5 6 7 8 9 10",
             "A _ _ _ _ _ _ _ _ _ _",
             "B _ _ _ _ _ _ _ _ _ _",
             "C _ _ _ _ _ _ _ _ _ _",
-            "D _ _ _ _ ! _ _ _ _ _",
-            "E _ _ _ @ _ _ _ _ _ _",
-            "F _ _ _ _ _ _ _ _ _ _",
+            "D _ _ _ _ _ _ _ _ _ _",
+            "E _ _ _ _ _ _ _ _ _ _",
+            "F _ _ _ _ ! _ _ _ _ _",
             "G _ _ _ _ _ _ _ _ _ _",
             "H _ _ _ _ _ _ _ _ _ _",
             "I _ _ _ _ _ _ _ _ _ _",
             "J _ _ _ _ _ _ _ _ _ _",
         }));
-        cockpit.Logs.Should().Contain(
-            new ShotLog("D5","hit","1"));
+        cockpit.Logs.Should().ContainInOrder(
+            new ShotLog("E6", "hit", "1"));
     }
 }
