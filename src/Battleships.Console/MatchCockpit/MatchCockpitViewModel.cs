@@ -22,12 +22,24 @@ public class MatchCockpitUpdater :
     public void Handle(ShotSunkShipEvent @event) =>
         PlaceAPeg(@event.Coordinates, Cell.RedPeg);
 
-    public void Handle(ShotHitShipEvent @event) =>
+    public void Handle(ShotHitShipEvent @event)
+    {
         PlaceAPeg(@event.Coordinates, Cell.RedPeg);
+        WriteALog(@event.Coordinates, "hit", @event.FleetShipId.Value);
+    }
 
-    public void Handle(ShotMissedEvent @event) =>
+    public void Handle(ShotMissedEvent @event)
+    {
         PlaceAPeg(@event.Coordinates, Cell.WhitePeg);
-    
+        WriteALog(@event.Coordinates, "miss", null);
+    }
+
+    private void WriteALog(Coordinates coordinates, string shotResult, string? shipId)
+    {
+        var gridCoordinates = CoordinatesTranslator.AGridCoordinates(coordinates);
+        _matchCockpitViewModel.Logs.Insert(0,new ShotLog(gridCoordinates, shotResult, shipId));
+    }
+
     private void PlaceAPeg(Coordinates coordinates, Cell peg)
     {
         var (x, y) = coordinates;
@@ -88,4 +100,5 @@ public record TargetGrid(Cell[][] Cells)
             _ => throw new ArgumentOutOfRangeException(nameof(cell), cell, null)
         };
 };
-public record MatchCockpitViewModel(TargetGrid TargetGrid);
+public record ShotLog(string Coordinates, string ShootResult, string? ShipId);
+public record MatchCockpitViewModel(TargetGrid TargetGrid, List<ShotLog> Logs);

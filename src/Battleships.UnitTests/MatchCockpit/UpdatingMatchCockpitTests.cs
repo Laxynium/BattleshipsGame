@@ -17,7 +17,7 @@ public class UpdatingMatchCockpitTests
             "B _ _ @ _",
             "C _ _ _ _",
             "D _ _ _ _",
-        }));
+        }), new List<ShotLog>());
         var matchCockpitUpdater = new MatchCockpitUpdater(matchCockpit);
         
         matchCockpitUpdater.Handle(new ShotMissedEvent(AFleetCoordinates("B4")));
@@ -42,7 +42,7 @@ public class UpdatingMatchCockpitTests
             "B _ _ _ _",
             "C _ _ _ _",
             "D _ _ _ _",
-        }));
+        }), new List<ShotLog>());
         var matchCockpitUpdater = new MatchCockpitUpdater(matchCockpit);
         
         matchCockpitUpdater.Handle(new ShotHitShipEvent(AFleetCoordinates("D1"),"1"));
@@ -67,7 +67,7 @@ public class UpdatingMatchCockpitTests
             "B _ ! _ _",
             "C _ _ _ _",
             "D _ _ _ _",
-        }));
+        }), new List<ShotLog>());
         var matchCockpitUpdater = new MatchCockpitUpdater(matchCockpit);
         
         matchCockpitUpdater.Handle(new ShotSunkShipEvent(AFleetCoordinates("C2"),"1"));
@@ -92,7 +92,7 @@ public class UpdatingMatchCockpitTests
             "B _ ! _ _",
             "C _ _ _ _",
             "D _ _ _ _",
-        }));
+        }), new List<ShotLog>());
         var matchCockpitUpdater = new MatchCockpitUpdater(matchCockpit);
         
         matchCockpitUpdater.Handle(new ShotSunkFleetEvent(AFleetCoordinates("D1"),"1"));
@@ -107,13 +107,41 @@ public class UpdatingMatchCockpitTests
         }));
     }
 
-    private static Coordinates AFleetCoordinates(string gridCoordinates)
+    [Fact]
+    public void log_is_visible_when_shot_misses()
     {
-        var row = gridCoordinates[0]-'A';
-        var column = gridCoordinates[1]-'1';
-        return new Coordinates(column, row);
+        var matchCockpit = new MatchCockpitViewModel(SomeTargetGrid(),new List<ShotLog>());
+        var matchCockpitUpdater = new MatchCockpitUpdater(matchCockpit);
+        
+        matchCockpitUpdater.Handle(new ShotMissedEvent(AFleetCoordinates("D1")));
+
+        matchCockpit.Logs.Should().ContainInOrder(new ShotLog("D1", "miss",null));
     }
     
+    [Fact]
+    public void log_is_visible_when_shot_hits_a_ship()
+    {
+        var matchCockpit = new MatchCockpitViewModel(SomeTargetGrid(),new List<ShotLog>());
+        var matchCockpitUpdater = new MatchCockpitUpdater(matchCockpit);
+        
+        matchCockpitUpdater.Handle(new ShotHitShipEvent(AFleetCoordinates("D3"),new FleetShipId("3")));
+
+        matchCockpit.Logs.Should().ContainInOrder(new ShotLog("D3", "hit","3"));
+    }
+    
+    private static Coordinates AFleetCoordinates(string gridCoordinates) => 
+        CoordinatesTranslator.AFleetCoordinates(gridCoordinates);
+
     private static TargetGrid ATargetGrid(IEnumerable<string> lines) =>
         TargetGrid.FromTextRepresentation(lines);
+
+    private static TargetGrid SomeTargetGrid() => ATargetGrid(new[]
+    {
+        "x 1 2 3 4",
+        "A _ _ @ _",
+        "B _ _ @ _",
+        "C _ _ _ _",
+        "D ! ! _ _",
+    });
+
 }
