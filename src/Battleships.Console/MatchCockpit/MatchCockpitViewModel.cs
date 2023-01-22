@@ -16,6 +16,27 @@ public class MatchCockpitUpdater :
         _matchCockpitViewModel = matchCockpitViewModel;
     }
 
+    public void Handle(IMatchEvent matchEvent)
+    {
+        switch (matchEvent)
+        {
+            case ShotSunkFleetEvent e:
+                Handle(e);
+                break;
+            case ShotSunkShipEvent e:
+                Handle(e);
+                break;
+            case ShotHitShipEvent e:
+                Handle(e);
+                break;
+            case ShotMissedEvent e:
+                Handle(e);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(matchEvent));
+        }
+    }
+    
     public void Handle(ShotSunkFleetEvent @event)
     {
         PlaceAPeg(@event.Coordinates, Cell.RedPeg);

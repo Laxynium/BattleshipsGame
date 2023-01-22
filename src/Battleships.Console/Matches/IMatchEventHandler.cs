@@ -1,6 +1,4 @@
-﻿using Battleships.Console.Matches;
-
-namespace Battleships.Console;
+﻿namespace Battleships.Console.Matches;
 
 public interface IMatchEventHandler<in TEvent>
     where TEvent: IMatchEvent
