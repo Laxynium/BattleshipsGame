@@ -3,21 +3,6 @@ using CSharpFunctionalExtensions;
 
 namespace Battleships.Console.Matches;
 
-public interface IMatchEvent
-{
-}
-
-public sealed record ShootMissedEvent(Coordinates Coordinates) : IMatchEvent;
-public sealed record ShootHitShipEvent(Coordinates Coordinates, FleetShipId FleetShipId) : IMatchEvent;
-public sealed record ShootSunkShipEvent(Coordinates Coordinates, FleetShipId FleetShipId) : IMatchEvent;
-public sealed record ShootSunkFleetEvent(Coordinates Coordinates, FleetShipId FleetShipId) : IMatchEvent;
-
-public interface IMatchCommand
-{
-}
-
-public sealed record ShootATarget(Coordinates Coordinates) : IMatchCommand;
-
 public class Match
 {
     private readonly Fleet _fleet;
@@ -53,7 +38,7 @@ public class Match
         });
     }
 
-    private IMatchEvent ToMatchEvent(ShootResult shootResult, Coordinates coordinates) =>
+    private static IMatchEvent ToMatchEvent(ShootResult shootResult, Coordinates coordinates) =>
         shootResult switch
         {
             ShootResult.FleetSunk (var id) => new ShootSunkFleetEvent(coordinates, id),
