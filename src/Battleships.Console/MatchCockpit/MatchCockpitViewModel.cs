@@ -16,13 +16,16 @@ public class MatchCockpitUpdater :
         _matchCockpitViewModel = matchCockpitViewModel;
     }
 
-    public void Handle(ShotSunkFleetEvent @event) =>
+    public void Handle(ShotSunkFleetEvent @event)
+    {
         PlaceAPeg(@event.Coordinates, Cell.RedPeg);
+        WriteALog(@event.Coordinates, "sunk_fleet", @event.FleetShipId.Value);
+    }
 
     public void Handle(ShotSunkShipEvent @event)
     {
         PlaceAPeg(@event.Coordinates, Cell.RedPeg);
-        WriteALog(@event.Coordinates, "sunk", @event.FleetShipId.Value);
+        WriteALog(@event.Coordinates, "sunk_ship", @event.FleetShipId.Value);
     }
 
     public void Handle(ShotHitShipEvent @event)
