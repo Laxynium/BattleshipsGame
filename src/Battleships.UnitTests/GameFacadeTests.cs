@@ -59,13 +59,10 @@ public class GameFacadeTests
         IFleetArranger arranger = new FixedFleetArranger(new []
         {
             (new FleetShipId("1"), new []{"B1", "B2", "B3", "B4", "B5"}),
-            (new FleetShipId("2"), new []{"E2", "D2", "E2", "F2"}),
+            (new FleetShipId("2"), new []{"C2", "D2", "E2", "F2"}),
             (new FleetShipId("3"), new []{"C5", "D5", "E5", "F5"}),
         });
         
-        var fleet = Fleet.Create(
-            CreateShip("1",(4,3),(4,4),(4,5)),
-            CreateShip("2", (1,2),(2,2)));
         var facade = new GameFacade(matchConfiguration, arranger);
         facade.StartANewMatch();
 
@@ -89,8 +86,8 @@ public class GameFacadeTests
             "J _ _ _ _ _ _ _ _ _ _",
         }));
         cockpit.Logs.Should().ContainInOrder(
-            new ShotLog("E5","hit","1"),
-            new ShotLog("D5", "hit", "1"),
+            new ShotLog("E5","hit","3"),
+            new ShotLog("D5", "hit", "3"),
             new ShotLog("E4","miss",null));
     }
 
@@ -137,6 +134,6 @@ public class GameFacadeTests
             "J _ _ _ _ _ _ _ _ _ _",
         }));
         cockpit.Logs.Should().ContainInOrder(
-            new ShotLog("F5", "hit", "1"));
+            new ShotLog("F5", "hit", "3"));
     }
 }

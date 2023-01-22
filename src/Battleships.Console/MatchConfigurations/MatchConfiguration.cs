@@ -46,6 +46,11 @@ public class MatchConfiguration
         {
             throw new ArgumentException("Fleet arrangement cannot contain overlapping ships");
         }
+
+        if (fleetArrangement.Count != _blueprintsStock.ShipBlueprints.Count)
+        {
+            throw new ArgumentException("Fleet arrangement does not match what was specified in ship blueprints stock");
+        }
         
         if (fleetArrangement.Select(x => x.shipId.Value).ToArray()
                 .Intersect(_blueprintsStock.ShipBlueprints.Select(x => x.id.Value).ToArray())
@@ -53,8 +58,15 @@ public class MatchConfiguration
         {
             throw new ArgumentException("Fleet arrangement does not match what was specified in ship blueprints stock");
         }
+
+        if (fleetArrangement.Join(_blueprintsStock.ShipBlueprints, x => x.shipId, x => x.id,
+                (x, y) => (x.coords.Set.Count, y.shipBlueprint.Set.Set.Count))
+            .Any(x => x.Item1 != x.Item2))
+        {
+            throw new ArgumentException("Fleet arrangement ship size does not match one specified in blueprint");
+        }
         
-        var ships = fleetArrangement.Select(x=>FleetShip.Create("1", x.coords))
+        var ships = fleetArrangement.Select(x=>FleetShip.Create(x.shipId, x.coords))
             .ToArray();
         
         return Fleet.Create(ships[0], ships.Skip(1).ToArray());

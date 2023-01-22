@@ -6,6 +6,7 @@ namespace Battleships.Console.MatchConfigurations;
 public class ShipBlueprint : ValueObject
 {
     private readonly CoordinatesSet _coordinatesSet;
+    public CoordinatesSet Set => _coordinatesSet;
 
     private ShipBlueprint(CoordinatesSet coordinatesSet)
     {
