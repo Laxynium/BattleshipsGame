@@ -22,7 +22,7 @@ public class PlayerTurnState : IGameState
     {
         var result = _fleet.ReceiveShot(takeAShotAt.Coordinate);
         
-        if (result == ShootResult.FleetSunk)
+        if (result is ShootResult.FleetSunk)
         {
             return new GameOverState();
         }

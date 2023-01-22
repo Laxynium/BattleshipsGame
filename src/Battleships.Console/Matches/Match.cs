@@ -56,9 +56,9 @@ public class Match
     private IMatchEvent ToMatchEvent(ShootResult shootResult, Coordinates coordinates) =>
         shootResult switch
         {
-            ShootResult.FleetSunk => new ShootSunkFleetEvent(coordinates,"1"),
-            ShootResult.Sunk => new ShootSunkShipEvent(coordinates,"1"),
-            ShootResult.Hit => new ShootHitShipEvent(coordinates,"1"),
+            ShootResult.FleetSunk (var id) => new ShootSunkFleetEvent(coordinates, id),
+            ShootResult.Sunk (var id) => new ShootSunkShipEvent(coordinates, id),
+            ShootResult.Hit (var id) => new ShootHitShipEvent(coordinates, id),
             ShootResult.Miss => new ShootMissedEvent(coordinates),
             _ => throw new ArgumentOutOfRangeException(nameof(shootResult), shootResult, null)
         };

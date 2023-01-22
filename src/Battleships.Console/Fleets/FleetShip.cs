@@ -19,12 +19,14 @@ public record FleetShip
     {
         if (!_holes.ContainsKey(coordinate))
         {
-            return ShootResult.Miss;
+            return new ShootResult.Miss();
         }
 
         _holes[coordinate] = true;
 
-        return IsSunk() ? ShootResult.Sunk : ShootResult.Hit;
+        return IsSunk() 
+            ? new ShootResult.Sunk(new FleetShipId("1"))  
+            : new ShootResult.Hit(new FleetShipId("1"));
     }
 
     public bool IsSunk() => 

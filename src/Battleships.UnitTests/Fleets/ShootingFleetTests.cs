@@ -10,13 +10,13 @@ public class ShootingFleetTests
     public void hitting_ship_with_one_coordinate_results_in_sunk()
     {
         Fleet.Create(CreateShip((3, 3)), CreateShip((1,1)))
-            .ReceiveShot((3, 3)).Should().Be(AShootResult(ShootResult.Sunk));
+            .ReceiveShot((3, 3)).Should().Be(AShootResult(ShootResultEnum.Sunk));
 
         Fleet.Create(CreateShip((4, 4)), CreateShip((1,1)))
-            .ReceiveShot((4, 4)).Should().Be(AShootResult(ShootResult.Sunk));
+            .ReceiveShot((4, 4)).Should().Be(AShootResult(ShootResultEnum.Sunk));
 
         Fleet.Create(CreateShip((5, 7)), CreateShip((1,1)))
-            .ReceiveShot((5, 7)).Should().Be(AShootResult(ShootResult.Sunk));
+            .ReceiveShot((5, 7)).Should().Be(AShootResult(ShootResultEnum.Sunk));
     }
 
     [Fact]
@@ -24,9 +24,9 @@ public class ShootingFleetTests
     {
         var fleet = Fleet.Create(CreateShip((3, 3)));
 
-        fleet.ReceiveShot((3, 4)).Should().Be(AShootResult(ShootResult.Miss));
-        fleet.ReceiveShot((4, 3)).Should().Be(AShootResult(ShootResult.Miss));
-        fleet.ReceiveShot((4, 4)).Should().Be(AShootResult(ShootResult.Miss));
+        fleet.ReceiveShot((3, 4)).Should().Be(AShootResult(ShootResultEnum.Miss));
+        fleet.ReceiveShot((4, 3)).Should().Be(AShootResult(ShootResultEnum.Miss));
+        fleet.ReceiveShot((4, 4)).Should().Be(AShootResult(ShootResultEnum.Miss));
     }
 
     [Fact]
@@ -34,13 +34,13 @@ public class ShootingFleetTests
     {
         var fleet = Fleet.Create(CreateShip((3, 3), (3, 4)), CreateShip((1,1)));
 
-        fleet.ReceiveShot((3, 3)).Should().Be(AShootResult(ShootResult.Hit));
-        fleet.ReceiveShot((3, 4)).Should().Be(AShootResult(ShootResult.Sunk));
+        fleet.ReceiveShot((3, 3)).Should().Be(AShootResult(ShootResultEnum.Hit));
+        fleet.ReceiveShot((3, 4)).Should().Be(AShootResult(ShootResultEnum.Sunk));
 
-        fleet.ReceiveShot((3, 2)).Should().Be(AShootResult(ShootResult.Miss));
-        fleet.ReceiveShot((3, 5)).Should().Be(AShootResult(ShootResult.Miss));
-        fleet.ReceiveShot((2, 3)).Should().Be(AShootResult(ShootResult.Miss));
-        fleet.ReceiveShot((4, 3)).Should().Be(AShootResult(ShootResult.Miss));
+        fleet.ReceiveShot((3, 2)).Should().Be(AShootResult(ShootResultEnum.Miss));
+        fleet.ReceiveShot((3, 5)).Should().Be(AShootResult(ShootResultEnum.Miss));
+        fleet.ReceiveShot((2, 3)).Should().Be(AShootResult(ShootResultEnum.Miss));
+        fleet.ReceiveShot((4, 3)).Should().Be(AShootResult(ShootResultEnum.Miss));
     }
 
 
@@ -49,15 +49,15 @@ public class ShootingFleetTests
     {
         var fleet = Fleet.Create(CreateShip((3, 3), (3, 4), (3, 5), (3, 6), (3, 7)));
 
-        fleet.ReceiveShot((3, 4)).Should().Be(AShootResult(ShootResult.Hit));
-        fleet.ReceiveShot((3, 5)).Should().Be(AShootResult(ShootResult.Hit));
-        fleet.ReceiveShot((3, 6)).Should().Be(AShootResult(ShootResult.Hit));
-        fleet.ReceiveShot((3, 7)).Should().Be(AShootResult(ShootResult.Hit));
+        fleet.ReceiveShot((3, 4)).Should().Be(AShootResult(ShootResultEnum.Hit));
+        fleet.ReceiveShot((3, 5)).Should().Be(AShootResult(ShootResultEnum.Hit));
+        fleet.ReceiveShot((3, 6)).Should().Be(AShootResult(ShootResultEnum.Hit));
+        fleet.ReceiveShot((3, 7)).Should().Be(AShootResult(ShootResultEnum.Hit));
 
-        fleet.ReceiveShot((3, 2)).Should().Be(AShootResult(ShootResult.Miss));
-        fleet.ReceiveShot((2, 4)).Should().Be(AShootResult(ShootResult.Miss));
-        fleet.ReceiveShot((4, 5)).Should().Be(AShootResult(ShootResult.Miss));
-        fleet.ReceiveShot((3, 9)).Should().Be(AShootResult(ShootResult.Miss));
+        fleet.ReceiveShot((3, 2)).Should().Be(AShootResult(ShootResultEnum.Miss));
+        fleet.ReceiveShot((2, 4)).Should().Be(AShootResult(ShootResultEnum.Miss));
+        fleet.ReceiveShot((4, 5)).Should().Be(AShootResult(ShootResultEnum.Miss));
+        fleet.ReceiveShot((3, 9)).Should().Be(AShootResult(ShootResultEnum.Miss));
     }
 
     [Fact]
@@ -67,11 +67,11 @@ public class ShootingFleetTests
             CreateShip((5, 5), (6, 5)),
             CreateShip((4, 4), (3, 4)));
 
-        fleet.ReceiveShot((5, 5)).Should().Be(AShootResult(ShootResult.Hit));
-        fleet.ReceiveShot((3, 4)).Should().Be(AShootResult(ShootResult.Hit));
+        fleet.ReceiveShot((5, 5)).Should().Be(AShootResult(ShootResultEnum.Hit));
+        fleet.ReceiveShot((3, 4)).Should().Be(AShootResult(ShootResultEnum.Hit));
         
-        fleet.ReceiveShot((6, 6)).Should().Be(AShootResult(ShootResult.Miss));
-        fleet.ReceiveShot((4, 5)).Should().Be(AShootResult(ShootResult.Miss));
+        fleet.ReceiveShot((6, 6)).Should().Be(AShootResult(ShootResultEnum.Miss));
+        fleet.ReceiveShot((4, 5)).Should().Be(AShootResult(ShootResultEnum.Miss));
     }
 
     [Fact]
@@ -84,16 +84,16 @@ public class ShootingFleetTests
             CreateShip((8, 0), (8, 1), (8, 2), (8,3)),
             CreateShip((5, 2), (5, 3), (5,4)));
         
-        fleet.ReceiveShot((1, 0)).Should().Be(AShootResult(ShootResult.Hit));
-        fleet.ReceiveShot((4, 3)).Should().Be(AShootResult(ShootResult.Hit));
-        fleet.ReceiveShot((8, 2)).Should().Be(AShootResult(ShootResult.Hit));
-        fleet.ReceiveShot((5, 4)).Should().Be(AShootResult(ShootResult.Hit));
-        fleet.ReceiveShot((7, 7)).Should().Be(AShootResult(ShootResult.Sunk));
+        fleet.ReceiveShot((1, 0)).Should().Be(AShootResult(ShootResultEnum.Hit));
+        fleet.ReceiveShot((4, 3)).Should().Be(AShootResult(ShootResultEnum.Hit));
+        fleet.ReceiveShot((8, 2)).Should().Be(AShootResult(ShootResultEnum.Hit));
+        fleet.ReceiveShot((5, 4)).Should().Be(AShootResult(ShootResultEnum.Hit));
+        fleet.ReceiveShot((7, 7)).Should().Be(AShootResult(ShootResultEnum.Sunk));
         
-        fleet.ReceiveShot((3, 0)).Should().Be(AShootResult(ShootResult.Miss));
-        fleet.ReceiveShot((4, 0)).Should().Be(AShootResult(ShootResult.Miss));
-        fleet.ReceiveShot((6, 6)).Should().Be(AShootResult(ShootResult.Miss));
-        fleet.ReceiveShot((8, 5)).Should().Be(AShootResult(ShootResult.Miss));
+        fleet.ReceiveShot((3, 0)).Should().Be(AShootResult(ShootResultEnum.Miss));
+        fleet.ReceiveShot((4, 0)).Should().Be(AShootResult(ShootResultEnum.Miss));
+        fleet.ReceiveShot((6, 6)).Should().Be(AShootResult(ShootResultEnum.Miss));
+        fleet.ReceiveShot((8, 5)).Should().Be(AShootResult(ShootResultEnum.Miss));
     }
 
     [Fact]
@@ -102,27 +102,27 @@ public class ShootingFleetTests
         var fleet = Fleet.Create(CreateShip((5, 5), (6, 5)), CreateShip((1,1)));
         fleet.ReceiveShot((5, 5));
 
-        fleet.ReceiveShot((6, 5)).Should().Be(AShootResult(ShootResult.Sunk));
+        fleet.ReceiveShot((6, 5)).Should().Be(AShootResult(ShootResultEnum.Sunk));
     }
     
     [Fact]
     public void for_many_coordinates_ship_hitting_all_of_the_coordinates_of_ship_results_in_sunk()
     {
         var fleet = Fleet.Create(CreateShip((5, 5), (6, 5), (7, 5), (8, 5)), CreateShip((1,1)));
-        fleet.ReceiveShot((5, 5)).Should().Be(AShootResult(ShootResult.Hit));
-        fleet.ReceiveShot((6, 5)).Should().Be(AShootResult(ShootResult.Hit));
-        fleet.ReceiveShot((7, 5)).Should().Be(AShootResult(ShootResult.Hit));
+        fleet.ReceiveShot((5, 5)).Should().Be(AShootResult(ShootResultEnum.Hit));
+        fleet.ReceiveShot((6, 5)).Should().Be(AShootResult(ShootResultEnum.Hit));
+        fleet.ReceiveShot((7, 5)).Should().Be(AShootResult(ShootResultEnum.Hit));
 
-        fleet.ReceiveShot((8, 5)).Should().Be(AShootResult(ShootResult.Sunk));
+        fleet.ReceiveShot((8, 5)).Should().Be(AShootResult(ShootResultEnum.Sunk));
     }
 
     [Fact]
     public void for_one_ship_sinking_all_of_the_ships_results_in_fleet_sunk()
     {
         var fleet = Fleet.Create(CreateShip((5, 5), (6, 5)));
-        fleet.ReceiveShot((5, 5)).Should().Be(AShootResult(ShootResult.Hit));
+        fleet.ReceiveShot((5, 5)).Should().Be(AShootResult(ShootResultEnum.Hit));
 
-        fleet.ReceiveShot((6, 5)).Should().Be(AShootResult(ShootResult.FleetSunk));
+        fleet.ReceiveShot((6, 5)).Should().Be(AShootResult(ShootResultEnum.FleetSunk));
     }
     
     [Fact]
@@ -135,7 +135,7 @@ public class ShootingFleetTests
         fleet.ReceiveShot((2, 2));
         fleet.ReceiveShot((2, 4));
 
-        fleet.ReceiveShot((2, 3)).Should().Be(AShootResult(ShootResult.FleetSunk));
+        fleet.ReceiveShot((2, 3)).Should().Be(AShootResult(ShootResultEnum.FleetSunk));
     }
 
     [Fact]
@@ -149,7 +149,7 @@ public class ShootingFleetTests
         fleet.ReceiveShot((6, 5));
         fleet.ReceiveShot((2, 4));
 
-        fleet.ReceiveShot((4, 5)).Should().Be(AShootResult(ShootResult.FleetSunk));
+        fleet.ReceiveShot((4, 5)).Should().Be(AShootResult(ShootResultEnum.FleetSunk));
     }
 
     [Fact]
@@ -168,8 +168,14 @@ public class ShootingFleetTests
         fleet.ReceiveShot((7, 7));
         fleet.ReceiveShot((9, 9));
 
-        fleet.ReceiveShot((3, 3)).Should().Be(AShootResult(ShootResult.FleetSunk));
+        fleet.ReceiveShot((3, 3)).Should().Be(AShootResult(ShootResultEnum.FleetSunk));
     }
 
-    private ShootResult AShootResult(ShootResult shootResult) => shootResult;
+    private static ShootResult AShootResult(ShootResultEnum shootResult) => shootResult switch
+    {
+        ShootResultEnum.FleetSunk => new ShootResult.FleetSunk(new FleetShipId("1")),
+        ShootResultEnum.Sunk => new ShootResult.Sunk(new FleetShipId("1")),
+        ShootResultEnum.Hit => new ShootResult.Hit(new FleetShipId("1")),
+        ShootResultEnum.Miss => new ShootResult.Miss(),
+    };
 }
