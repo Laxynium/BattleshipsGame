@@ -28,9 +28,13 @@ public record Fleet
         foreach (var ship in _ships)
         {
             var result = ship.ReceiveShot(coordinates);
-            if (result is not ShootResult.Miss)
+            if (result is ShootResult.Hit hit)
             {
-                return IsFleetSunk() ? new ShootResult.FleetSunk(new FleetShipId("1")) : result;
+                return IsFleetSunk() ? new ShootResult.FleetSunk(hit.FleetShipId) : result;
+            }
+            if (result is ShootResult.Sunk sunk)
+            {
+                return IsFleetSunk() ? new ShootResult.FleetSunk(sunk.FleetShipId) : result;
             }
         }
 
