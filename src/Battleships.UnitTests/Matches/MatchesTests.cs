@@ -100,4 +100,23 @@ public class MatchesTests
         
         match.Handle(new ShootATarget((4, 4))).IsSuccess.Should().BeFalse();
     }
+
+    [Fact]
+    public void hitting_the_same_coordinates_of_ship_all_over_again_does_not_cause_it_to_sink()
+    {
+        var fleet = Fleet.Create(CreateShip("1", (5, 5), (5,6)));
+        var match = new Match(fleet);
+
+        var result = match.Handle(new ShootATarget((5, 5)));
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().ContainEquivalentOf(new ShootHitShipEvent((5, 5), "1"));
+        
+        result = match.Handle(new ShootATarget((5, 5)));
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().ContainEquivalentOf(new ShootHitShipEvent((5, 5), "1"));
+        
+        result = match.Handle(new ShootATarget((5, 5)));
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().ContainEquivalentOf(new ShootHitShipEvent((5, 5), "1"));
+    }
 }
