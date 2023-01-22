@@ -21,6 +21,7 @@ public sealed record ShootATarget(Coordinates Coordinates) : IMatchCommand;
 public class Match
 {
     private readonly Fleet _fleet;
+    private bool _gameOver;
 
     public Match(Fleet fleet)
     {
@@ -29,41 +30,46 @@ public class Match
 
     public Result<IReadOnlyCollection<IMatchEvent>> Handle(IMatchCommand command)
     {
-        if (command is ShootATarget shootATarget)
+        if (_gameOver)
         {
-            var result = _fleet.ReceiveShot(shootATarget.Coordinates);
+            return Result.Failure<IReadOnlyCollection<IMatchEvent>>("Match has ended, cannot accept any more commands");
+        }
+        
+        if (command is not ShootATarget shootATarget)
+            return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>());
+        
+        var result = _fleet.ReceiveShot(shootATarget.Coordinates);
 
-            if (result == ShootResult.Hit)
-            {
-                return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>
-                {
-                    new ShootHitShipEvent(shootATarget.Coordinates)
-                });    
-
-            }
-
-            if (result == ShootResult.Sunk)
-            {
-                return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>
-                {
-                    new ShootSunkShipEvent(shootATarget.Coordinates)
-                });  
-            }
-            
-            if (result == ShootResult.FleetSunk)
-            {
-                return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>
-                {
-                    new ShootSunkFleetEvent(shootATarget.Coordinates)
-                });  
-            }
-
+        if (result == ShootResult.Hit)
+        {
             return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>
             {
-                new ShootMissedEvent((shootATarget.Coordinates))
+                new ShootHitShipEvent(shootATarget.Coordinates)
             });    
+
         }
 
-        return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>());
+        if (result == ShootResult.Sunk)
+        {
+            return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>
+            {
+                new ShootSunkShipEvent(shootATarget.Coordinates)
+            });  
+        }
+            
+        if (result == ShootResult.FleetSunk)
+        {
+            _gameOver = true;
+            return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>
+            {
+                new ShootSunkFleetEvent(shootATarget.Coordinates)
+            });  
+        }
+
+        return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>
+        {
+            new ShootMissedEvent((shootATarget.Coordinates))
+        });
+
     }
 }

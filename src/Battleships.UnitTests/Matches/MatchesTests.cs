@@ -70,4 +70,18 @@ public class MatchesTests
         result.Value.Should().ContainEquivalentOf(new ShootMissedEvent((3, 3)));
     }
     
+    [Fact]
+    public void there_is_game_over_when_all_ships_are_sunk()
+    {
+        var fleet = Fleet.Create(
+            FleetShip.Create(CoordinatesSet.Create((5, 5))));
+        var match = new Match(fleet);
+        match.Handle(new ShootATarget((5, 5)));
+
+        var result = match.Handle(new ShootATarget((6, 6)));
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().Contain("Match has ended");
+    }
+    
 }
