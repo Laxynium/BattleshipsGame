@@ -23,23 +23,23 @@ public record Fleet
         return new(allShips);
     }
 
-    public ShootResult ReceiveShot(Coordinates coordinates)
+    public ShotResult ReceiveShot(Coordinates coordinates)
     {
         foreach (var ship in _ships)
         {
             var result = ship.ReceiveShot(coordinates);
 
-            if (result is ShootResult.Miss)
+            if (result is ShotResult.Miss)
             {
                 continue;
             }
 
             return IsFleetSunk()
-                ? new ShootResult.FleetSunk(GetFleetShipId(result))
+                ? new ShotResult.FleetSunk(GetFleetShipId(result))
                 : result;
         }
 
-        return new ShootResult.Miss();
+        return new ShotResult.Miss();
     }
 
     private bool IsFleetSunk()
@@ -47,13 +47,13 @@ public record Fleet
         return _ships.All(x => x.IsSunk());
     }
 
-    private static FleetShipId GetFleetShipId(ShootResult shootResult) =>
-        shootResult switch
+    private static FleetShipId GetFleetShipId(ShotResult shotResult) =>
+        shotResult switch
         {
-            ShootResult.Hit (var id) => id,
-            ShootResult.Sunk (var id) => id,
-            ShootResult.FleetSunk (var id) => id,
-            _ => throw new ArgumentOutOfRangeException(nameof(shootResult), shootResult, null)
+            ShotResult.Hit (var id) => id,
+            ShotResult.Sunk (var id) => id,
+            ShotResult.FleetSunk (var id) => id,
+            _ => throw new ArgumentOutOfRangeException(nameof(shotResult), shotResult, null)
         };
 
 

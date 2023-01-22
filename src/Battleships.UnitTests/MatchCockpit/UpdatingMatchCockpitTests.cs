@@ -20,7 +20,7 @@ public class UpdatingMatchCockpitTests
         }));
         var matchCockpitUpdater = new MatchCockpitUpdater(matchCockpit);
         
-        matchCockpitUpdater.Handle(new ShootMissedEvent(AFleetCoordinates("B4")));
+        matchCockpitUpdater.Handle(new ShotMissedEvent(AFleetCoordinates("B4")));
 
         matchCockpit.TargetGrid.Should().BeEquivalentTo(ATargetGrid(new[]
         {
@@ -45,7 +45,7 @@ public class UpdatingMatchCockpitTests
         }));
         var matchCockpitUpdater = new MatchCockpitUpdater(matchCockpit);
         
-        matchCockpitUpdater.Handle(new ShootHitShipEvent(AFleetCoordinates("D1"),"1"));
+        matchCockpitUpdater.Handle(new ShotHitShipEvent(AFleetCoordinates("D1"),"1"));
 
         matchCockpit.TargetGrid.Should().BeEquivalentTo(ATargetGrid(new[]
         {
@@ -70,7 +70,7 @@ public class UpdatingMatchCockpitTests
         }));
         var matchCockpitUpdater = new MatchCockpitUpdater(matchCockpit);
         
-        matchCockpitUpdater.Handle(new ShootSunkShipEvent(AFleetCoordinates("C2"),"1"));
+        matchCockpitUpdater.Handle(new ShotSunkShipEvent(AFleetCoordinates("C2"),"1"));
 
         matchCockpit.TargetGrid.Should().BeEquivalentTo(ATargetGrid(new[]
         {
@@ -95,7 +95,7 @@ public class UpdatingMatchCockpitTests
         }));
         var matchCockpitUpdater = new MatchCockpitUpdater(matchCockpit);
         
-        matchCockpitUpdater.Handle(new ShootSunkFleetEvent(AFleetCoordinates("D1"),"1"));
+        matchCockpitUpdater.Handle(new ShotSunkFleetEvent(AFleetCoordinates("D1"),"1"));
 
         matchCockpit.TargetGrid.Should().BeEquivalentTo(ATargetGrid(new[]
         {

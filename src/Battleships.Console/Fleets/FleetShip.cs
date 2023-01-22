@@ -16,18 +16,18 @@ public record FleetShip
         return new FleetShip(id, coordinatesSet.Set);
     }
 
-    public ShootResult ReceiveShot(Coordinates coordinate)
+    public ShotResult ReceiveShot(Coordinates coordinate)
     {
         if (!_holes.ContainsKey(coordinate))
         {
-            return new ShootResult.Miss();
+            return new ShotResult.Miss();
         }
 
         _holes[coordinate] = true;
 
         return IsSunk() 
-            ? new ShootResult.Sunk(_id)  
-            : new ShootResult.Hit(_id);
+            ? new ShotResult.Sunk(_id)  
+            : new ShotResult.Hit(_id);
     }
 
     public bool IsSunk() => 

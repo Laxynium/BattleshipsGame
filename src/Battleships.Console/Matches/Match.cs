@@ -27,7 +27,7 @@ public class Match
 
         var matchEvent = ToMatchEvent(result, shootATarget.Coordinates);
 
-        if (matchEvent is ShootSunkFleetEvent)
+        if (matchEvent is ShotSunkFleetEvent)
         {
             _matchOver = true;
         }
@@ -38,13 +38,13 @@ public class Match
         });
     }
 
-    private static IMatchEvent ToMatchEvent(ShootResult shootResult, Coordinates coordinates) =>
-        shootResult switch
+    private static IMatchEvent ToMatchEvent(ShotResult shotResult, Coordinates coordinates) =>
+        shotResult switch
         {
-            ShootResult.FleetSunk (var id) => new ShootSunkFleetEvent(coordinates, id),
-            ShootResult.Sunk (var id) => new ShootSunkShipEvent(coordinates, id),
-            ShootResult.Hit (var id) => new ShootHitShipEvent(coordinates, id),
-            ShootResult.Miss => new ShootMissedEvent(coordinates),
-            _ => throw new ArgumentOutOfRangeException(nameof(shootResult), shootResult, null)
+            ShotResult.FleetSunk (var id) => new ShotSunkFleetEvent(coordinates, id),
+            ShotResult.Sunk (var id) => new ShotSunkShipEvent(coordinates, id),
+            ShotResult.Hit (var id) => new ShotHitShipEvent(coordinates, id),
+            ShotResult.Miss => new ShotMissedEvent(coordinates),
+            _ => throw new ArgumentOutOfRangeException(nameof(shotResult), shotResult, null)
         };
 }

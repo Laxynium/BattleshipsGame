@@ -1,12 +1,12 @@
 namespace Battleships.Console.Fleets;
 
-public abstract record ShootResult
+public abstract record ShotResult
 {
-    private ShootResult(){}
-    public record FleetSunk(FleetShipId FleetShipId) : ShootResult;
-    public record Sunk(FleetShipId FleetShipId) : ShootResult;
-    public record Hit(FleetShipId FleetShipId) : ShootResult;
-    public record Miss : ShootResult;
+    private ShotResult(){}
+    public record FleetSunk(FleetShipId FleetShipId) : ShotResult;
+    public record Sunk(FleetShipId FleetShipId) : ShotResult;
+    public record Hit(FleetShipId FleetShipId) : ShotResult;
+    public record Miss : ShotResult;
 
     public static FleetSunk AFleetSunk(FleetShipId fleetShipId) => new(fleetShipId);
     public static Sunk ASunk(FleetShipId fleetShipId) => new(fleetShipId);

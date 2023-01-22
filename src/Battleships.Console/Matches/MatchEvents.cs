@@ -3,7 +3,7 @@
 namespace Battleships.Console.Matches;
 
 public interface IMatchEvent { }
-public sealed record ShootMissedEvent(Coordinates Coordinates) : IMatchEvent;
-public sealed record ShootHitShipEvent(Coordinates Coordinates, FleetShipId FleetShipId) : IMatchEvent;
-public sealed record ShootSunkShipEvent(Coordinates Coordinates, FleetShipId FleetShipId) : IMatchEvent;
-public sealed record ShootSunkFleetEvent(Coordinates Coordinates, FleetShipId FleetShipId) : IMatchEvent;
+public sealed record ShotMissedEvent(Coordinates Coordinates) : IMatchEvent;
+public sealed record ShotHitShipEvent(Coordinates Coordinates, FleetShipId FleetShipId) : IMatchEvent;
+public sealed record ShotSunkShipEvent(Coordinates Coordinates, FleetShipId FleetShipId) : IMatchEvent;
+public sealed record ShotSunkFleetEvent(Coordinates Coordinates, FleetShipId FleetShipId) : IMatchEvent;

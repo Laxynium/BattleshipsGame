@@ -4,10 +4,10 @@ using Battleships.Console.Matches;
 namespace Battleships.Console.MatchCockpit;
 
 public class MatchCockpitUpdater : 
-    IMatchEventHandler<ShootSunkFleetEvent>, 
-    IMatchEventHandler<ShootSunkShipEvent>,
-    IMatchEventHandler<ShootHitShipEvent>,
-    IMatchEventHandler<ShootMissedEvent>
+    IMatchEventHandler<ShotSunkFleetEvent>, 
+    IMatchEventHandler<ShotSunkShipEvent>,
+    IMatchEventHandler<ShotHitShipEvent>,
+    IMatchEventHandler<ShotMissedEvent>
 {
     private readonly MatchCockpitViewModel _matchCockpitViewModel;
 
@@ -16,16 +16,16 @@ public class MatchCockpitUpdater :
         _matchCockpitViewModel = matchCockpitViewModel;
     }
 
-    public void Handle(ShootSunkFleetEvent @event) =>
+    public void Handle(ShotSunkFleetEvent @event) =>
         PlaceAPeg(@event.Coordinates, Cell.RedPeg);
 
-    public void Handle(ShootSunkShipEvent @event) =>
+    public void Handle(ShotSunkShipEvent @event) =>
         PlaceAPeg(@event.Coordinates, Cell.RedPeg);
 
-    public void Handle(ShootHitShipEvent @event) =>
+    public void Handle(ShotHitShipEvent @event) =>
         PlaceAPeg(@event.Coordinates, Cell.RedPeg);
 
-    public void Handle(ShootMissedEvent @event) =>
+    public void Handle(ShotMissedEvent @event) =>
         PlaceAPeg(@event.Coordinates, Cell.WhitePeg);
     
     private void PlaceAPeg(Coordinates coordinates, Cell peg)

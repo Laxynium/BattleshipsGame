@@ -16,7 +16,7 @@ public class MatchesTests
         var result = match.Handle(new ShootATarget((0, 0)));
 
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().ContainEquivalentOf(new ShootMissedEvent((0, 0)));
+        result.Value.Should().ContainEquivalentOf(new ShotMissedEvent((0, 0)));
     }
 
     [Fact]
@@ -28,7 +28,7 @@ public class MatchesTests
         var result = match.Handle(new ShootATarget((3, 3)));
 
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().ContainEquivalentOf(new ShootHitShipEvent((3, 3), "1"));
+        result.Value.Should().ContainEquivalentOf(new ShotHitShipEvent((3, 3), "1"));
     }
 
     [Fact]
@@ -42,7 +42,7 @@ public class MatchesTests
         var result = match.Handle(new ShootATarget((1, 1)));
 
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().ContainEquivalentOf(new ShootSunkShipEvent((1, 1), "2"));
+        result.Value.Should().ContainEquivalentOf(new ShotSunkShipEvent((1, 1), "2"));
     }
 
     [Fact]
@@ -55,7 +55,7 @@ public class MatchesTests
         var result = match.Handle(new ShootATarget((3, 4)));
 
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().ContainEquivalentOf(new ShootSunkFleetEvent((3, 4), "1"));
+        result.Value.Should().ContainEquivalentOf(new ShotSunkFleetEvent((3, 4), "1"));
     }
 
     [Fact]
@@ -68,7 +68,7 @@ public class MatchesTests
         var result = match.Handle(new ShootATarget((3, 3)));
 
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().ContainEquivalentOf(new ShootMissedEvent((3, 3)));
+        result.Value.Should().ContainEquivalentOf(new ShotMissedEvent((3, 3)));
     }
 
     [Fact]
@@ -109,14 +109,14 @@ public class MatchesTests
 
         var result = match.Handle(new ShootATarget((5, 5)));
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().ContainEquivalentOf(new ShootHitShipEvent((5, 5), "1"));
+        result.Value.Should().ContainEquivalentOf(new ShotHitShipEvent((5, 5), "1"));
         
         result = match.Handle(new ShootATarget((5, 5)));
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().ContainEquivalentOf(new ShootHitShipEvent((5, 5), "1"));
+        result.Value.Should().ContainEquivalentOf(new ShotHitShipEvent((5, 5), "1"));
         
         result = match.Handle(new ShootATarget((5, 5)));
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().ContainEquivalentOf(new ShootHitShipEvent((5, 5), "1"));
+        result.Value.Should().ContainEquivalentOf(new ShotHitShipEvent((5, 5), "1"));
     }
 }
