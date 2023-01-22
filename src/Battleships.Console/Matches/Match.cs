@@ -12,9 +12,7 @@ public class Match
     {
         _fleet = fleet;
     }
-
-    public string State => _matchOver ? "match_over" : "player_turn";
-
+    
     public Result<IReadOnlyCollection<IMatchEvent>> Handle(IMatchCommand command)
     {
         if (_matchOver)
@@ -32,6 +30,10 @@ public class Match
         if (matchEvent is ShotSunkFleetEvent)
         {
             _matchOver = true;
+            return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>
+            {
+                matchEvent, new MatchOverEvent()
+            });
         }
         
         return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>

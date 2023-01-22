@@ -10,8 +10,8 @@ public class GameFacade
     private readonly IFleetArranger _fleetArranger;
 
     private Match? _match;
-    private MatchCockpitViewModel? _cockpitViewModel;
-    private MatchCockpitUpdater? _matchCockpitUpdater;
+    private MatchViewModel? _matchViewModel;
+    private MatchViewModelUpdater? _matchViewModelUpdater;
     
     public GameFacade(MatchConfiguration matchConfiguration, IFleetArranger fleetArranger)
     {
@@ -21,27 +21,30 @@ public class GameFacade
     
     public void StartANewMatch()
     {
+        _matchViewModel = new MatchViewModel();
+        _matchViewModelUpdater = new MatchViewModelUpdater(_matchViewModel);
+        
         var fleet = _matchConfiguration.CreateFleet(_fleetArranger);
         _match = new Match(fleet);
-        _cockpitViewModel = InitialMatchCockpit(_matchConfiguration);
-        _matchCockpitUpdater = new MatchCockpitUpdater(_cockpitViewModel);
+        
+        _matchViewModelUpdater.Handle(new MatchStartedEvent(_matchConfiguration));
     }
 
     public MatchCockpitViewModel GetMatchCockpit()
     {
-        if (_cockpitViewModel is null)
+        if (_matchViewModel is null)
         {
-            throw new InvalidOperationException("New match has to be started first");
+            throw new InvalidOperationException("Match has to be started first");
         }
         
-        return _cockpitViewModel;
+        return _matchViewModel.Cockpit;
     }
 
     public void ShootATarget(string gridCoordinates)
     {
-        if (_match is null || _matchCockpitUpdater is null)
+        if (_match is null || _matchViewModelUpdater is null)
         {
-            throw new InvalidOperationException("New match has to be started first");
+            throw new InvalidOperationException("Match has to be started first");
         }
         
         var coordinates = GridCoordinates.From(gridCoordinates).ToFleetCoords();
@@ -62,19 +65,16 @@ public class GameFacade
         
         foreach (var matchEvent in result.Value)
         {
-            _matchCockpitUpdater.Handle(matchEvent);
+            _matchViewModelUpdater.Handle(matchEvent);
         }
     }
-
-    private static MatchCockpitViewModel InitialMatchCockpit(MatchConfiguration matchConfiguration) =>
-        new(new TargetGrid(
-                Enumerable.Range(0, matchConfiguration.Constrains.Height).Select(y => 
-                        Enumerable.Range(0, matchConfiguration.Constrains.Width).Select(x => Cell.None).ToArray())
-                    .ToArray()),
-            new List<ShotLog>());
-
+    
     public string GetGameState()
     {
-        return _match!.State;
+        if (_matchViewModel is null)
+        {
+            throw new InvalidOperationException("Match has to be started first");
+        }
+        return _matchViewModel.State;
     }
 }
