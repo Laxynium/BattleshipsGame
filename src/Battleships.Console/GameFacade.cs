@@ -1,4 +1,4 @@
-﻿using Battleships.Console.MatchCockpit;
+﻿ using Battleships.Console.MatchCockpit;
 using Battleships.Console.MatchConfigurations;
 using Battleships.Console.Matches;
 
@@ -44,7 +44,7 @@ public class GameFacade
             throw new InvalidOperationException("New match has to be started first");
         }
         
-        var coordinates = CoordinatesTranslator.AFleetCoordinates(gridCoordinates);
+        var coordinates = GridCoordinates.From(gridCoordinates).ToFleetCoords();
 
         var result = _match.Handle(new ShootATarget(coordinates));
         if (result.IsFailure)
@@ -64,4 +64,9 @@ public class GameFacade
                         Enumerable.Range(0, matchConfiguration.Constrains.Width).Select(x => Cell.None).ToArray())
                     .ToArray()),
             new List<ShotLog>());
+
+    public string GetGameState()
+    {
+        return _match!.State;
+    }
 }

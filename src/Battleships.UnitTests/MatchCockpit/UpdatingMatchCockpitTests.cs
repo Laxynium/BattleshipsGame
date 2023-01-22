@@ -173,7 +173,7 @@ public class UpdatingMatchCockpitTests
     }
     
     private static Coordinates AFleetCoordinates(string gridCoordinates) => 
-        CoordinatesTranslator.AFleetCoordinates(gridCoordinates);
+        GridCoordinates.From(gridCoordinates).ToFleetCoords();
 
     private static TargetGrid ATargetGrid(IEnumerable<string> lines) =>
         TargetGrid.FromTextRepresentation(lines);

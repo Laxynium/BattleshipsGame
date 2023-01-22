@@ -20,8 +20,8 @@ public class GameFacadeTests
 
         IFleetArranger arranger = new FixedFleetArranger(new []
         {
-            (new FleetShipId("1"), new []{"D4", "E4", "F4"}),
-            (new FleetShipId("2"), new []{"C2", "C3"})
+            (new FleetShipId("1"), new GridCoordinates[]{"D4", "E4", "F4"}),
+            (new FleetShipId("2"), new GridCoordinates[]{"C2", "C3"})
         });
         
         var facade = new GameFacade(matchConfiguration, arranger);
@@ -58,9 +58,9 @@ public class GameFacadeTests
 
         IFleetArranger arranger = new FixedFleetArranger(new []
         {
-            (new FleetShipId("1"), new []{"B1", "B2", "B3", "B4", "B5"}),
-            (new FleetShipId("2"), new []{"C2", "D2", "E2", "F2"}),
-            (new FleetShipId("3"), new []{"C5", "D5", "E5", "F5"}),
+            (new FleetShipId("1"), new GridCoordinates[]{"B1", "B2", "B3", "B4", "B5"}),
+            (new FleetShipId("2"), new GridCoordinates[]{"C2", "D2", "E2", "F2"}),
+            (new FleetShipId("3"), new GridCoordinates[]{"C5", "D5", "E5", "F5"}),
         });
         
         var facade = new GameFacade(matchConfiguration, arranger);
@@ -103,9 +103,9 @@ public class GameFacadeTests
 
         IFleetArranger arranger = new FixedFleetArranger(new []
         {
-            (new FleetShipId("1"), new []{"B1", "B2", "B3", "B4", "B5"}),
-            (new FleetShipId("2"), new []{"C2", "D2", "E2", "F2"}),
-            (new FleetShipId("3"), new []{"C5", "D5", "E5", "F5"}),
+            (new FleetShipId("1"), new GridCoordinates[]{"B1", "B2", "B3", "B4", "B5"}),
+            (new FleetShipId("2"), new GridCoordinates[]{"C2", "D2", "E2", "F2"}),
+            (new FleetShipId("3"), new GridCoordinates[]{"C5", "D5", "E5", "F5"}),
         });
         
         var facade = new GameFacade(matchConfiguration, arranger);
@@ -149,9 +149,9 @@ public class GameFacadeTests
 
         IFleetArranger arranger = new FixedFleetArranger(new []
         {
-            (new FleetShipId("1"), new []{"B1", "B2", "B3", "B4", "B5"}),
-            (new FleetShipId("2"), new []{"A1", "A2", "A3", "A4"}),
-            (new FleetShipId("3"), new []{"C1", "C2", "C3", "C4"}),
+            (new FleetShipId("1"), new GridCoordinates[]{"B1", "B2", "B3", "B4", "B5"}),
+            (new FleetShipId("2"), new GridCoordinates[]{"A1", "A2", "A3", "A4"}),
+            (new FleetShipId("3"), new GridCoordinates[]{"C1", "C2", "C3", "C4"}),
         });
         
         var facade = new GameFacade(matchConfiguration, arranger);

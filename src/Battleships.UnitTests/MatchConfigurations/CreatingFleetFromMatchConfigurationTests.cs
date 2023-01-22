@@ -1,4 +1,5 @@
-﻿using Battleships.Console.Fleets;
+﻿using Battleships.Console;
+using Battleships.Console.Fleets;
 using Battleships.Console.MatchConfigurations;
 using FluentAssertions;
 
@@ -15,7 +16,7 @@ public class CreatingFleetFromMatchConfigurationTests
 
         var fixedFleetArranger = new FixedFleetArranger(new []
         {
-            (new FleetShipId("1"), new []{"A3","A4","A5","A6"})
+            (new FleetShipId("1"), new GridCoordinates[]{"A3","A4","A5","A6"})
         });
         
         var action = () =>matchConfiguration.CreateFleet(fixedFleetArranger);
@@ -32,7 +33,7 @@ public class CreatingFleetFromMatchConfigurationTests
 
         var fixedFleetArranger = new FixedFleetArranger(new []
         {
-            (new FleetShipId("1"), new []{"D3","E3","F3","G3"})
+            (new FleetShipId("1"), new GridCoordinates[]{"D3","E3","F3","G3"})
         });
         
         var action = () =>matchConfiguration.CreateFleet(fixedFleetArranger);
@@ -50,7 +51,7 @@ public class CreatingFleetFromMatchConfigurationTests
 
         var fixedFleetArranger = new FixedFleetArranger(new []
         {
-            (new FleetShipId("1"), new []{"A3","B3","C3","D3"})
+            (new FleetShipId("1"), new GridCoordinates[]{"A3","B3","C3","D3"})
         });
         
         var action = () =>matchConfiguration.CreateFleet(fixedFleetArranger);
@@ -67,8 +68,8 @@ public class CreatingFleetFromMatchConfigurationTests
 
         var fixedFleetArranger = new FixedFleetArranger(new []
         {
-            (new FleetShipId("1"), new []{"A3","B3","C3","D3"}),
-            (new FleetShipId("2"), new []{"A4","B4"}),
+            (new FleetShipId("1"), new GridCoordinates[]{"A3","B3","C3","D3"}),
+            (new FleetShipId("2"), new GridCoordinates[]{"A4","B4"}),
         });
         
         var action = () =>matchConfiguration.CreateFleet(fixedFleetArranger);
@@ -85,8 +86,8 @@ public class CreatingFleetFromMatchConfigurationTests
 
         var fixedFleetArranger = new FixedFleetArranger(new []
         {
-            (new FleetShipId("1"), new []{"A3","B3","C3","D3"}),
-            (new FleetShipId("2"), new []{"B3","B4"}),
+            (new FleetShipId("1"), new GridCoordinates[]{"A3","B3","C3","D3"}),
+            (new FleetShipId("2"), new GridCoordinates[]{"B3","B4"}),
         });
         
         var action = () =>matchConfiguration.CreateFleet(fixedFleetArranger);
@@ -103,7 +104,7 @@ public class CreatingFleetFromMatchConfigurationTests
 
         var fixedFleetArranger = new FixedFleetArranger(new []
         {
-            (new FleetShipId("1"), new []{"A3","B3","C3","D3","E3"})
+            (new FleetShipId("1"), new GridCoordinates[]{"A3","B3","C3","D3","E3"})
         });
         
         var action = () =>matchConfiguration.CreateFleet(fixedFleetArranger);

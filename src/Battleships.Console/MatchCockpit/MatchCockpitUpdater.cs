@@ -63,7 +63,7 @@ public class MatchCockpitUpdater :
 
     private void WriteALog(Coordinates coordinates, string shotResult, string? shipId)
     {
-        var gridCoordinates = CoordinatesTranslator.AGridCoordinates(coordinates);
+        var gridCoordinates = GridCoordinates.From(coordinates).ToString();
         _matchCockpitViewModel.Logs.Insert(0,new ShotLog(gridCoordinates, shotResult, shipId));
     }
 
