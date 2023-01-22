@@ -1,5 +1,42 @@
-﻿namespace Battleships.Console.MatchCockpit;
+﻿using Battleships.Console.Matches;
 
+namespace Battleships.Console.MatchCockpit;
+
+public class MatchCockpitUpdater : 
+    IMatchEventHandler<ShootSunkFleetEvent>, 
+    IMatchEventHandler<ShootSunkShipEvent>,
+    IMatchEventHandler<ShootHitShipEvent>,
+    IMatchEventHandler<ShootMissedEvent>
+{
+    private readonly MatchCockpitViewModel _matchCockpitViewModel;
+
+    public MatchCockpitUpdater(MatchCockpitViewModel matchCockpitViewModel)
+    {
+        _matchCockpitViewModel = matchCockpitViewModel;
+    }
+
+    public void Handle(ShootSunkFleetEvent @event)
+    {
+        
+    }
+
+    public void Handle(ShootSunkShipEvent @event)
+    {
+        
+    }
+
+    public void Handle(ShootHitShipEvent @event)
+    {
+        var (x, y) = @event.Coordinates;
+        _matchCockpitViewModel.TargetGrid.Cells[x][y] = Cell.RedPeg;
+    }
+
+    public void Handle(ShootMissedEvent @event)
+    {
+        var (x, y) = @event.Coordinates;
+        _matchCockpitViewModel.TargetGrid.Cells[x][y] = Cell.WhitePeg;
+    }
+}
 public enum Cell{None, WhitePeg, RedPeg}
 public record TargetGrid(Cell[][] Cells)
 {

@@ -29,4 +29,10 @@ public class Coordinates : ValueObject
         yield return X;
         yield return Y;
     }
+
+    public void Deconstruct(out int x, out int y)
+    {
+        x = X;
+        y = Y;
+    }
 }
