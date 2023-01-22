@@ -10,7 +10,7 @@ public class GameStatesChangesTests
     [Fact]
     public void player_turn_state_changes_to_player_turn_state_when_there_are_still_not_sunk_ships()
     {
-        var fleet = Fleet.Create(CreateShip((0, 0), (0, 1)));
+        var fleet = Fleet.Create(CreateShip("1", (0, 0), (0, 1)));
         
         var playerTurnState = new PlayerTurnState(fleet);
 
@@ -21,7 +21,7 @@ public class GameStatesChangesTests
     [Fact]
     public void player_turn_state_changes_to_game_finished_state_when_all_ships_got_sunk()
     {
-        var fleet = Fleet.Create(CreateShip((0, 0)));
+        var fleet = Fleet.Create(CreateShip("1", (0, 0)));
         
         var playerTurnState = new PlayerTurnState(fleet);
         
@@ -33,9 +33,9 @@ public class GameStatesChangesTests
     [Fact]
     public void sinking_all_the_ships_will_change_state_to_game_over()
     {
-        var fleet = Fleet.Create(CreateShip((0, 0)), 
-            CreateShip((1, 1)),
-            CreateShip((3, 3)));
+        var fleet = Fleet.Create(CreateShip("1",(0, 0)), 
+            CreateShip("2", (1, 1)),
+            CreateShip("3", (3, 3)));
         
         IGameState state = new PlayerTurnState(fleet);
         
@@ -52,9 +52,9 @@ public class GameStatesChangesTests
     [Fact]
     public void game_over_state_cannot_be_escaped()
     {
-        var fleet = Fleet.Create(CreateShip((0, 0)), 
-            CreateShip((1, 1)),
-            CreateShip((3, 3)));
+        var fleet = Fleet.Create(CreateShip("1", (0, 0)), 
+            CreateShip("2", (1, 1)),
+            CreateShip("3", (3, 3)));
         
         IGameState state = new GameOverState();
 
