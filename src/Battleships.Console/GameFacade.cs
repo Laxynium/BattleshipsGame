@@ -23,7 +23,7 @@ public class GameFacade
     {
         var fleet = _matchConfiguration.CreateFleet(_fleetArranger);
         _match = new Match(fleet);
-        _cockpitViewModel = EmptyMatchCockpit();
+        _cockpitViewModel = InitialMatchCockpit(_matchConfiguration);
         _matchCockpitUpdater = new MatchCockpitUpdater(_cockpitViewModel);
     }
 
@@ -58,12 +58,10 @@ public class GameFacade
         }
     }
 
-    private static MatchCockpitViewModel EmptyMatchCockpit()
-    {
-        return new MatchCockpitViewModel(new TargetGrid(
-                Enumerable.Range(0, 10).Select(y => 
-                        Enumerable.Range(0, 10).Select(x => Cell.None).ToArray())
+    private static MatchCockpitViewModel InitialMatchCockpit(MatchConfiguration matchConfiguration) =>
+        new(new TargetGrid(
+                Enumerable.Range(0, matchConfiguration.Constrains.Height).Select(y => 
+                        Enumerable.Range(0, matchConfiguration.Constrains.Width).Select(x => Cell.None).ToArray())
                     .ToArray()),
             new List<ShotLog>());
-    }
 }

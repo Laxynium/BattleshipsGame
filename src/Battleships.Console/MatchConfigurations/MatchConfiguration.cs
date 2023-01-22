@@ -23,13 +23,13 @@ public class ShipBlueprintsStock
 }
 public class MatchConfiguration
 {
-    private readonly GridConstrains _gridConstrains;
-    private readonly ShipBlueprintsStock _blueprintsStock;
+    public GridConstrains Constrains { get; }
+    public ShipBlueprintsStock BlueprintsStock { get; }
 
     public MatchConfiguration(GridConstrains gridConstrains, ShipBlueprintsStock blueprintsStock)
     {
-        _gridConstrains = gridConstrains;
-        _blueprintsStock = blueprintsStock;
+        Constrains = gridConstrains;
+        BlueprintsStock = blueprintsStock;
     }
 
     public Fleet CreateFleet(IFleetArranger fleetArranger)
@@ -37,7 +37,7 @@ public class MatchConfiguration
         var fleetArrangement = fleetArranger.GetShipsArrangement(this);
 
         if (fleetArrangement.Any(x => x.coords.Set.Any(c =>
-                c.X < 0 || c.Y < 0 || c.X >= _gridConstrains.Width || c.Y >= _gridConstrains.Height)))
+                c.X < 0 || c.Y < 0 || c.X >= Constrains.Width || c.Y >= Constrains.Height)))
         {
             throw new ArgumentException("Fleet arrangement contains ships outside of the grid constrains");
         }
@@ -47,19 +47,19 @@ public class MatchConfiguration
             throw new ArgumentException("Fleet arrangement cannot contain overlapping ships");
         }
 
-        if (fleetArrangement.Count != _blueprintsStock.ShipBlueprints.Count)
+        if (fleetArrangement.Count != BlueprintsStock.ShipBlueprints.Count)
         {
             throw new ArgumentException("Fleet arrangement does not match what was specified in ship blueprints stock");
         }
         
         if (fleetArrangement.Select(x => x.shipId.Value).ToArray()
-                .Intersect(_blueprintsStock.ShipBlueprints.Select(x => x.id.Value).ToArray())
-                .Count() != _blueprintsStock.ShipBlueprints.Count)
+                .Intersect(BlueprintsStock.ShipBlueprints.Select(x => x.id.Value).ToArray())
+                .Count() != BlueprintsStock.ShipBlueprints.Count)
         {
             throw new ArgumentException("Fleet arrangement does not match what was specified in ship blueprints stock");
         }
 
-        if (fleetArrangement.Join(_blueprintsStock.ShipBlueprints, x => x.shipId, x => x.id,
+        if (fleetArrangement.Join(BlueprintsStock.ShipBlueprints, x => x.shipId, x => x.id,
                 (x, y) => (x.coords.Set.Count, y.shipBlueprint.Set.Set.Count))
             .Any(x => x.Item1 != x.Item2))
         {

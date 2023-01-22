@@ -1,6 +1,6 @@
 ﻿using Battleships.Console.Fleets;
 
-namespace Battleships.Console.MatchCockpit;
+namespace Battleships.Console;
 
 public static class CoordinatesTranslator
 {

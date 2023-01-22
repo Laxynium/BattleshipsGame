@@ -5,12 +5,11 @@ namespace Battleships.Console.MatchConfigurations;
 
 public class ShipBlueprint : ValueObject
 {
-    private readonly CoordinatesSet _coordinatesSet;
-    public CoordinatesSet Set => _coordinatesSet;
+    public CoordinatesSet Set { get; }
 
     private ShipBlueprint(CoordinatesSet coordinatesSet)
     {
-        _coordinatesSet = coordinatesSet;
+        Set = coordinatesSet;
     }
 
     public static ShipBlueprint FromText(string text)
@@ -49,6 +48,6 @@ public class ShipBlueprint : ValueObject
 
     protected override IEnumerable<object> GetEqualityComponents()
     {
-        yield return _coordinatesSet;
+        yield return Set;
     }
 }

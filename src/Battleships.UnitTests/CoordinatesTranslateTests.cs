@@ -1,8 +1,8 @@
-﻿using Battleships.Console.Fleets;
-using Battleships.Console.MatchCockpit;
+﻿using Battleships.Console;
+using Battleships.Console.Fleets;
 using FluentAssertions;
 
-namespace Battleships.UnitTests.MatchCockpit;
+namespace Battleships.UnitTests;
 
 public class CoordinatesTranslateTests
 {

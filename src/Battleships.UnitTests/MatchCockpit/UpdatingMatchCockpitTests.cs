@@ -1,4 +1,5 @@
-﻿using Battleships.Console.Fleets;
+﻿using Battleships.Console;
+using Battleships.Console.Fleets;
 using Battleships.Console.MatchCockpit;
 using Battleships.Console.Matches;
 using FluentAssertions;
