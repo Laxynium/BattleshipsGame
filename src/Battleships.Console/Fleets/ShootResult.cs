@@ -7,12 +7,9 @@ public abstract record ShootResult
     public record Sunk(FleetShipId FleetShipId) : ShootResult;
     public record Hit(FleetShipId FleetShipId) : ShootResult;
     public record Miss : ShootResult;
-}
 
-public enum ShootResultEnum
-{
-    Hit,
-    Miss,
-    Sunk,
-    FleetSunk
+    public static FleetSunk AFleetSunk(FleetShipId fleetShipId) => new(fleetShipId);
+    public static Sunk ASunk(FleetShipId fleetShipId) => new(fleetShipId);
+    public static Hit AHit(FleetShipId fleetShipId) => new(fleetShipId);
+    public static Miss AMiss() => new();
 }
