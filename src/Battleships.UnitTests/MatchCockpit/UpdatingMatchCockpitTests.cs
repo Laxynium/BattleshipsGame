@@ -129,6 +129,17 @@ public class UpdatingMatchCockpitTests
         matchCockpit.Logs.Should().ContainInOrder(new ShotLog("D3", "hit","3"));
     }
     
+    [Fact]
+    public void log_is_visible_when_shot_sunk_a_ship()
+    {
+        var matchCockpit = new MatchCockpitViewModel(SomeTargetGrid(),new List<ShotLog>());
+        var matchCockpitUpdater = new MatchCockpitUpdater(matchCockpit);
+        
+        matchCockpitUpdater.Handle(new ShotSunkShipEvent(AFleetCoordinates("B3"),new FleetShipId("2")));
+
+        matchCockpit.Logs.Should().ContainInOrder(new ShotLog("B3", "sunk","2"));
+    }
+    
     private static Coordinates AFleetCoordinates(string gridCoordinates) => 
         CoordinatesTranslator.AFleetCoordinates(gridCoordinates);
 
