@@ -3,17 +3,19 @@ using Battleships.Console.Application.Matches;
 
 namespace Battleships.Console.Application.MatchCockpit;
 
-public class MatchCockpitUpdater : 
-    IMatchEventHandler<ShotSunkFleetEvent>, 
+public class MatchCockpitUpdater :
+    IMatchEventHandler<ShotSunkFleetEvent>,
     IMatchEventHandler<ShotSunkShipEvent>,
     IMatchEventHandler<ShotHitShipEvent>,
     IMatchEventHandler<ShotMissedEvent>
 {
     private readonly MatchCockpitViewModel _matchCockpitViewModel;
+    private readonly MatchConfigurationDto _matchConfiguration;
 
-    public MatchCockpitUpdater(MatchCockpitViewModel matchCockpitViewModel)
+    public MatchCockpitUpdater(MatchCockpitViewModel matchCockpitViewModel, MatchConfigurationDto matchConfiguration)
     {
         _matchCockpitViewModel = matchCockpitViewModel;
+        this._matchConfiguration = matchConfiguration;
     }
 
     public void Handle(MatchEvent matchEvent)
@@ -36,7 +38,7 @@ public class MatchCockpitUpdater :
                 throw new ArgumentOutOfRangeException(nameof(matchEvent));
         }
     }
-    
+
     public void Handle(ShotSunkFleetEvent @event)
     {
         PlaceAPeg(@event.Coordinates, Cell.RedPeg);
@@ -64,8 +66,20 @@ public class MatchCockpitUpdater :
     private void WriteALog(Coordinates coordinates, ShotResultDto shotResult, string? shipId)
     {
         var gridCoordinates = GridCoordinates.From(coordinates).ToString();
-        _matchCockpitViewModel.Logs.Insert(0,new ShotLog(gridCoordinates, shotResult, shipId, shipId != null ? "empty_ship_name": null));
+        _matchCockpitViewModel.Logs.Insert(0,CreateShotLog(gridCoordinates, shotResult, shipId));
     }
+
+    private ShotLog CreateShotLog(string gridCoordinates, ShotResultDto shotResult, string? shipId) =>
+        new(gridCoordinates,
+            shotResult,
+            shipId,
+            GetShipName(shipId)
+        );
+
+    private string? GetShipName(string? shipId) =>
+        shipId != null && _matchConfiguration.ShipsNames.ContainsKey(shipId)
+            ? _matchConfiguration.ShipsNames[shipId] 
+            : null;
 
     private void PlaceAPeg(Coordinates coordinates, Cell peg)
     {

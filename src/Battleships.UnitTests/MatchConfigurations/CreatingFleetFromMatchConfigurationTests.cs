@@ -13,7 +13,7 @@ public class CreatingFleetFromMatchConfigurationTests
     {
         var matchConfiguration = new MatchConfiguration(new GridConstrains(5, 5),
             ShipBlueprintsStock.Create(
-                ("1", ShipBlueprint.FromText("----"))));
+                ("1", AShipBlueprint("----"))));
 
         var fixedFleetArranger = new FixedFleetArranger(new []
         {
@@ -24,13 +24,13 @@ public class CreatingFleetFromMatchConfigurationTests
 
         action.Should().Throw<Exception>().WithMessage("*outside*");
     }
-    
+
     [Fact]
     public void error_when_outside_of_grid_height()
     {
         var matchConfiguration = new MatchConfiguration(new GridConstrains(5, 5),
             ShipBlueprintsStock.Create(
-                ("1", ShipBlueprint.FromText("----"))));
+                ("1", AShipBlueprint("----"))));
 
         var fixedFleetArranger = new FixedFleetArranger(new []
         {
@@ -47,8 +47,8 @@ public class CreatingFleetFromMatchConfigurationTests
     {
         var matchConfiguration = new MatchConfiguration(new GridConstrains(5, 5),
             ShipBlueprintsStock.Create(
-                ("1", ShipBlueprint.FromText("----")),
-                ("2", ShipBlueprint.FromText("--"))));
+                ("1", AShipBlueprint("----")),
+                ("2", AShipBlueprint("--"))));
 
         var fixedFleetArranger = new FixedFleetArranger(new []
         {
@@ -59,13 +59,13 @@ public class CreatingFleetFromMatchConfigurationTests
 
         action.Should().Throw<Exception>().WithMessage("*does not match*");
     }
-    
+
     [Fact]
     public void error_when_there_is_some_extra_ship()
     {
         var matchConfiguration = new MatchConfiguration(new GridConstrains(5, 5),
             ShipBlueprintsStock.Create(
-                ("1", ShipBlueprint.FromText("----"))));
+                ("1", AShipBlueprint("----"))));
 
         var fixedFleetArranger = new FixedFleetArranger(new []
         {
@@ -77,13 +77,13 @@ public class CreatingFleetFromMatchConfigurationTests
 
         action.Should().Throw<Exception>().WithMessage("*does not match*");
     }
-    
+
     [Fact]
     public void error_when_there_are_overlapping_ships()
     {
         var matchConfiguration = new MatchConfiguration(new GridConstrains(5, 5),
             ShipBlueprintsStock.Create(
-                ("1", ShipBlueprint.FromText("----"))));
+                ("1", AShipBlueprint("----"))));
 
         var fixedFleetArranger = new FixedFleetArranger(new []
         {
@@ -95,13 +95,13 @@ public class CreatingFleetFromMatchConfigurationTests
 
         action.Should().Throw<Exception>().WithMessage("*overlapping*");
     }
-    
+
     [Fact]
     public void error_when_ship_size_does_not_match_one_specified_in_blueprint()
     {
         var matchConfiguration = new MatchConfiguration(new GridConstrains(5, 5),
             ShipBlueprintsStock.Create(
-                ("1", ShipBlueprint.FromText("----"))));
+                ("1", AShipBlueprint("----"))));
 
         var fixedFleetArranger = new FixedFleetArranger(new []
         {
@@ -112,4 +112,7 @@ public class CreatingFleetFromMatchConfigurationTests
 
         action.Should().Throw<Exception>().WithMessage("*size does not match*");
     }
+
+    private static ShipBlueprint AShipBlueprint(string text) => 
+         ShipBlueprint.FromText("not-relevant",text);
 }

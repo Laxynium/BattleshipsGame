@@ -1,9 +1,7 @@
-﻿using Battleships.Console;
-using Battleships.Console.Application;
+﻿using Battleships.Console.Application;
 using Battleships.Console.Application.Fleets;
 using Battleships.Console.Application.MatchCockpit;
-using Battleships.Console.Application.MatchConfigurations;
-using Battleships.UnitTests.MatchConfigurations;
+using Battleships.Console.Application.MatchConfigurations; 
 using FluentAssertions;
 
 namespace Battleships.UnitTests;
@@ -14,8 +12,8 @@ public class GameFacadeTests
     public void empty_grid_and_no_logs_after_starting_a_game()
     {
         var shipBlueprintsStock = ShipBlueprintsStock.Create(
-            ("1", ShipBlueprint.FromText("---")),
-            ("2", ShipBlueprint.FromText("--")));
+            ("1", ShipBlueprint.FromText("Cruiser","---")),
+            ("2", ShipBlueprint.FromText("Submarine","--")));
         var matchConfiguration = new MatchConfiguration(
             new GridConstrains(10, 10), shipBlueprintsStock);
 
@@ -51,9 +49,9 @@ public class GameFacadeTests
     public void after_starting_a_game_player_can_shoot_a_target()
     {
         var shipBlueprintsStock = ShipBlueprintsStock.Create(
-            ("1", ShipBlueprint.FromText("-----")),
-            ("2", ShipBlueprint.FromText("----")),
-            ("3", ShipBlueprint.FromText("----")));
+            ("1", ShipBlueprint.FromText("Carrier", "-----")),
+            ("2", ShipBlueprint.FromText("Battleship","----")),
+            ("3", ShipBlueprint.FromText("Battleship","----")));
         var matchConfiguration = new MatchConfiguration(
             new GridConstrains(10, 10), shipBlueprintsStock);
 
@@ -87,8 +85,8 @@ public class GameFacadeTests
             "J _ _ _ _ _ _ _ _ _ _",
         }));
         cockpit.Logs.Should().ContainInOrder(
-            new ShotLog("E5",ShotResultDto.Hit, "3", "empty_ship_name"),
-            new ShotLog("D5", ShotResultDto.Hit, "3", "empty_ship_name"),
+            new ShotLog("E5",ShotResultDto.Hit, "3", "Battleship"),
+            new ShotLog("D5", ShotResultDto.Hit, "3", "Battleship"),
             new ShotLog("E4",ShotResultDto.Miss,null, null));
     }
 
@@ -96,9 +94,9 @@ public class GameFacadeTests
     public void starting_a_new_game_restarts_grid_and_fleet_state()
     {
         var shipBlueprintsStock = ShipBlueprintsStock.Create(
-            ("1", ShipBlueprint.FromText("-----")),
-            ("2", ShipBlueprint.FromText("----")),
-            ("3", ShipBlueprint.FromText("----")));
+            ("1", ShipBlueprint.FromText("Carrier", "-----")),
+            ("2", ShipBlueprint.FromText("Battleship","----")),
+            ("3", ShipBlueprint.FromText("Battleship", "----")));
         var matchConfiguration = new MatchConfiguration(
             new GridConstrains(10, 10), shipBlueprintsStock);
 
@@ -135,16 +133,16 @@ public class GameFacadeTests
             "J _ _ _ _ _ _ _ _ _ _",
         }));
         cockpit.Logs.Should().ContainInOrder(
-            new ShotLog("F5", ShotResultDto.Hit, "3", "empty_ship_name"));
+            new ShotLog("F5", ShotResultDto.Hit, "3", "Battleship"));
     }
 
     [Fact]
     public void match_cockpit_matches_the_size_specified_in_configuration()
     {
         var shipBlueprintsStock = ShipBlueprintsStock.Create(
-            ("1", ShipBlueprint.FromText("-----")),
-            ("2", ShipBlueprint.FromText("----")),
-            ("3", ShipBlueprint.FromText("----")));
+            ("1", ShipBlueprint.FromText("Carrier", "-----")),
+            ("2", ShipBlueprint.FromText("Battleship", "----")),
+            ("3", ShipBlueprint.FromText("Battleship", "----")));
         var matchConfiguration = new MatchConfiguration(
             new GridConstrains(5, 5), shipBlueprintsStock);
 

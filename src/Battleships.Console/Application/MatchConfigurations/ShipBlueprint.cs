@@ -3,16 +3,22 @@ using CSharpFunctionalExtensions;
 
 namespace Battleships.Console.Application.MatchConfigurations;
 
+public record ShipBlueprintName(string Name)
+{
+    public static implicit operator ShipBlueprintName(string name) => new(name);
+}
 public class ShipBlueprint : ValueObject
 {
+    public ShipBlueprintName ShipBlueprintName { get; }
     public CoordinatesSet Set { get; }
 
-    private ShipBlueprint(CoordinatesSet coordinatesSet)
+    private ShipBlueprint(ShipBlueprintName shipBlueprintName, CoordinatesSet coordinatesSet)
     {
+        ShipBlueprintName = shipBlueprintName;
         Set = coordinatesSet;
     }
 
-    public static ShipBlueprint FromText(string text)
+    public static ShipBlueprint FromText(ShipBlueprintName name, string text)
     {
         if (text.Length == 0)
         {
@@ -28,10 +34,10 @@ public class ShipBlueprint : ValueObject
             .Select(x => new Coordinates(x,0))
             .ToArray();
 
-        return Create(CoordinatesSet.Create(coords.First(), coords.Skip(1).ToArray()));
+        return Create(name, CoordinatesSet.Create(coords.First(), coords.Skip(1).ToArray()));
     }
 
-    public static ShipBlueprint Create(CoordinatesSet coordinatesSet)
+    public static ShipBlueprint Create(ShipBlueprintName name, CoordinatesSet coordinatesSet)
     {
         if (!coordinatesSet.Set.Contains((0, 0)))
         {
@@ -43,7 +49,7 @@ public class ShipBlueprint : ValueObject
             throw new Exception("Ship blueprint coords need to >= 0");
         }
         
-        return new ShipBlueprint(coordinatesSet);
+        return new ShipBlueprint(name, coordinatesSet);
     }
 
     protected override IEnumerable<object> GetEqualityComponents()

@@ -12,9 +12,9 @@ public class Program
 {
     private static readonly MatchConfiguration MatchConfiguration = new(
         new GridConstrains(10, 10), ShipBlueprintsStock.Create(
-            ("1", ShipBlueprint.FromText("-----")),
-            ("2", ShipBlueprint.FromText("----")),
-            ("3", ShipBlueprint.FromText("----"))));
+            ("1", ShipBlueprint.FromText("Battleship","-----")),
+            ("2", ShipBlueprint.FromText("Destroyer","----")),
+            ("3", ShipBlueprint.FromText("Destroyer", "----"))));
 
     //TODO replace with random fleet arranger
     private static readonly FixedFleetArranger FleetArranger = new(new[]
@@ -93,7 +93,7 @@ public class Program
             }
         }
 
-        Render("See you back soon!");
+        Render(FiggleFonts.Banner.Render("See you back soon!"));
         Display();
     }
 
@@ -137,9 +137,9 @@ public class Program
         shotLog.ShotResult switch
         {
             { } dto when dto == ShotResultDto.Miss => $"Shot at {shotLog.Coordinates} was a miss",
-            { } dto when dto == ShotResultDto.Hit => $"Shot at {shotLog.Coordinates} hit a ship {shotLog.ShipId}",
-            { } dto when dto == ShotResultDto.SunkShip => $"Shot at {shotLog.Coordinates} sunk a ship {shotLog.ShipId}",
-            { } dto when dto == ShotResultDto.SunkFleet => $"Shot at {shotLog.Coordinates} sunk a last one fleet ship {shotLog.ShipId}",
+            { } dto when dto == ShotResultDto.Hit => $"Shot at {shotLog.Coordinates} hit a {shotLog.ShipName}({shotLog.ShipId})",
+            { } dto when dto == ShotResultDto.SunkShip => $"Shot at {shotLog.Coordinates} sunk a {shotLog.ShipName}({shotLog.ShipId})",
+            { } dto when dto == ShotResultDto.SunkFleet => $"Shot at {shotLog.Coordinates} sunk a last one fleet ship which was {shotLog.ShipName}({shotLog.ShipId})",
             _ => throw new ArgumentOutOfRangeException()
         };
 

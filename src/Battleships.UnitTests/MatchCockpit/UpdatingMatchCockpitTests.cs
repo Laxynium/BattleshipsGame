@@ -1,5 +1,4 @@
-﻿using Battleships.Console;
-using Battleships.Console.Application;
+﻿using Battleships.Console.Application;
 using Battleships.Console.Application.Fleets;
 using Battleships.Console.Application.MatchCockpit;
 using Battleships.Console.Application.Matches;
@@ -20,7 +19,7 @@ public class UpdatingMatchCockpitTests
             "C _ _ _ _",
             "D _ _ _ _",
         }), new List<ShotLog>());
-        var matchCockpitUpdater = new MatchCockpitUpdater(matchCockpit);
+        var matchCockpitUpdater = AMatchCockpitUpdater(matchCockpit);
 
         matchCockpitUpdater.Handle(new ShotMissedEvent("1", AFleetCoordinates("B4")));
 
@@ -45,7 +44,7 @@ public class UpdatingMatchCockpitTests
             "C _ _ _ _",
             "D _ _ _ _",
         }), new List<ShotLog>());
-        var matchCockpitUpdater = new MatchCockpitUpdater(matchCockpit);
+        var matchCockpitUpdater = AMatchCockpitUpdater(matchCockpit);
 
         matchCockpitUpdater.Handle(new ShotHitShipEvent("1", AFleetCoordinates("D1"), "1"));
 
@@ -70,7 +69,7 @@ public class UpdatingMatchCockpitTests
             "C _ _ _ _",
             "D _ _ _ _",
         }), new List<ShotLog>());
-        var matchCockpitUpdater = new MatchCockpitUpdater(matchCockpit);
+        var matchCockpitUpdater = AMatchCockpitUpdater(matchCockpit);
 
         matchCockpitUpdater.Handle(new ShotSunkShipEvent("1", AFleetCoordinates("C2"), "1"));
 
@@ -95,7 +94,7 @@ public class UpdatingMatchCockpitTests
             "C _ _ _ _",
             "D _ _ _ _",
         }), new List<ShotLog>());
-        var matchCockpitUpdater = new MatchCockpitUpdater(matchCockpit);
+        var matchCockpitUpdater = AMatchCockpitUpdater(matchCockpit);
 
         matchCockpitUpdater.Handle(new ShotSunkFleetEvent("1", AFleetCoordinates("D1"), "1"));
 
@@ -113,7 +112,7 @@ public class UpdatingMatchCockpitTests
     public void log_is_visible_when_shot_misses()
     {
         var matchCockpit = new MatchCockpitViewModel(SomeTargetGrid(), new List<ShotLog>());
-        var matchCockpitUpdater = new MatchCockpitUpdater(matchCockpit);
+        var matchCockpitUpdater = AMatchCockpitUpdater(matchCockpit);
 
         matchCockpitUpdater.Handle(new ShotMissedEvent("1", AFleetCoordinates("D1")));
 
@@ -124,40 +123,40 @@ public class UpdatingMatchCockpitTests
     public void log_is_visible_when_shot_hits_a_ship()
     {
         var matchCockpit = new MatchCockpitViewModel(SomeTargetGrid(), new List<ShotLog>());
-        var matchCockpitUpdater = new MatchCockpitUpdater(matchCockpit);
+        var matchCockpitUpdater = AMatchCockpitUpdater(matchCockpit, ("1", "Destroyer"), ("2", "Submarine"), ("3", "Cruiser"));
 
         matchCockpitUpdater.Handle(new ShotHitShipEvent("1", AFleetCoordinates("D3"), new FleetShipId("3")));
 
-        matchCockpit.Logs.Should().ContainInOrder(new ShotLog("D3", ShotResultDto.Hit, "3", "empty_ship_name"));
+        matchCockpit.Logs.Should().ContainInOrder(new ShotLog("D3", ShotResultDto.Hit, "3", "Cruiser"));
     }
 
     [Fact]
     public void log_is_visible_when_shot_sunk_a_ship()
     {
         var matchCockpit = new MatchCockpitViewModel(SomeTargetGrid(), new List<ShotLog>());
-        var matchCockpitUpdater = new MatchCockpitUpdater(matchCockpit);
+        var matchCockpitUpdater = AMatchCockpitUpdater(matchCockpit, ("1", "Destroyer"), ("2", "Submarine"));
 
         matchCockpitUpdater.Handle(new ShotSunkShipEvent("1", AFleetCoordinates("B3"), new FleetShipId("2")));
 
-        matchCockpit.Logs.Should().ContainInOrder(new ShotLog("B3", ShotResultDto.SunkShip, "2", "empty_ship_name"));
+        matchCockpit.Logs.Should().ContainInOrder(new ShotLog("B3", ShotResultDto.SunkShip, "2", "Submarine"));
     }
 
     [Fact]
     public void log_is_visible_when_shot_sunk_a_fleet()
     {
         var matchCockpit = new MatchCockpitViewModel(SomeTargetGrid(), new List<ShotLog>());
-        var matchCockpitUpdater = new MatchCockpitUpdater(matchCockpit);
+        var matchCockpitUpdater = AMatchCockpitUpdater(matchCockpit, ("1", "Destroyer") );
 
         matchCockpitUpdater.Handle(new ShotSunkFleetEvent("1", AFleetCoordinates("A4"), new FleetShipId("1")));
 
-        matchCockpit.Logs.Should().ContainInOrder(new ShotLog("A4", ShotResultDto.SunkFleet, "1","empty_ship_name"));
+        matchCockpit.Logs.Should().ContainInOrder(new ShotLog("A4", ShotResultDto.SunkFleet, "1","Destroyer"));
     }
 
     [Fact]
     public void newest_logs_are_on_the_top_of_list()
     {
         var matchCockpit = new MatchCockpitViewModel(SomeTargetGrid(), new List<ShotLog>());
-        var matchCockpitUpdater = new MatchCockpitUpdater(matchCockpit);
+        var matchCockpitUpdater = AMatchCockpitUpdater(matchCockpit, ("1", "Destroyer"), ("2", "Submarine"));
 
         matchCockpitUpdater.Handle(new ShotMissedEvent("1", AFleetCoordinates("A4")));
         matchCockpitUpdater.Handle(new ShotHitShipEvent("1", AFleetCoordinates("A3"), new FleetShipId("1")));
@@ -166,13 +165,19 @@ public class UpdatingMatchCockpitTests
         matchCockpitUpdater.Handle(new ShotSunkShipEvent("1", AFleetCoordinates("C3"), new FleetShipId("1")));
 
         matchCockpit.Logs.Should().ContainInOrder(
-            new ShotLog("C3", ShotResultDto.SunkShip, "1", "empty_ship_name"),
-            new ShotLog("B3", ShotResultDto.Hit, "1", "empty_ship_name"),
-            new ShotLog("D1", ShotResultDto.Hit, "2", "empty_ship_name"),
-            new ShotLog("A3", ShotResultDto.Hit, "1", "empty_ship_name"),
+            new ShotLog("C3", ShotResultDto.SunkShip, "1", "Destroyer"),
+            new ShotLog("B3", ShotResultDto.Hit, "1", "Destroyer"),
+            new ShotLog("D1", ShotResultDto.Hit, "2", "Submarine"),
+            new ShotLog("A3", ShotResultDto.Hit, "1", "Destroyer"),
             new ShotLog("A4", ShotResultDto.Miss, null, null));
     }
 
+    private static MatchCockpitUpdater AMatchCockpitUpdater(MatchCockpitViewModel matchCockpit) => 
+        new(matchCockpit, new MatchConfigurationDto(new Dictionary<string, string>()));
+
+    private static MatchCockpitUpdater AMatchCockpitUpdater(MatchCockpitViewModel matchCockpit, params (string id, string name)[] shipsNames) => 
+        new(matchCockpit, new MatchConfigurationDto(shipsNames.ToDictionary(x=>x.id, x=>x.name)));
+    
     private static Coordinates AFleetCoordinates(string gridCoordinates) =>
         GridCoordinates.From(gridCoordinates).ToFleetCoords();
 

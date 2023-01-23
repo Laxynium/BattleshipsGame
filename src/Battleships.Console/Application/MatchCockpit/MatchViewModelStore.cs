@@ -15,7 +15,7 @@ public class MatchViewModelStore :
         {
             return null;
         }
-        
+
         return _viewModels[matchId];
     }
 
@@ -26,7 +26,7 @@ public class MatchViewModelStore :
             Handle(matchEvent);
         }
     }
-    
+
     public void Handle(MatchEvent matchEvent)
     {
         switch (matchEvent)
@@ -38,7 +38,7 @@ public class MatchViewModelStore :
                 Handle(e);
                 break;
             default:
-                new MatchCockpitUpdater(_viewModels[matchEvent.MatchId].Cockpit)
+                new MatchCockpitUpdater(_viewModels[matchEvent.MatchId].Cockpit, _viewModels[matchEvent.MatchId].Configuration)
                     .Handle(matchEvent);
                 break;
         }
@@ -47,22 +47,29 @@ public class MatchViewModelStore :
 
     public void Handle(MatchStartedEvent @event)
     {
-        _viewModels[@event.MatchId] = new MatchViewModel(InitialMatchCockpit(@event.MatchConfiguration), MatchStateDto.PlayerTurn)
-        {
-            Cockpit = InitialMatchCockpit(@event.MatchConfiguration),
-            State = MatchStateDto.PlayerTurn
-        };
+        _viewModels[@event.MatchId] =
+            new MatchViewModel(InitialMatchCockpit(@event.MatchConfiguration),
+                MatchStateDto.PlayerTurn,
+                new MatchConfigurationDto(GetShipsNames(@event)));
     }
 
     public void Handle(MatchOverEvent @event)
     {
-        _viewModels[@event.MatchId] = _viewModels[@event.MatchId] with{State = MatchStateDto.MatchOver};
+        _viewModels[@event.MatchId] = _viewModels[@event.MatchId] with { State = MatchStateDto.MatchOver };
     }
 
     private static MatchCockpitViewModel InitialMatchCockpit(MatchConfiguration matchConfiguration) =>
         new(new TargetGrid(
-                Enumerable.Range(0, matchConfiguration.Constrains.Height).Select(y => 
+                Enumerable.Range(0, matchConfiguration.Constrains.Height).Select(y =>
                         Enumerable.Range(0, matchConfiguration.Constrains.Width).Select(x => Cell.None).ToArray())
                     .ToArray()),
             new List<ShotLog>());
+
+    private static Dictionary<string, string> GetShipsNames(MatchStartedEvent @event)
+    {
+        var shipsNames = @event.MatchConfiguration.BlueprintsStock.ShipBlueprints
+            .ToDictionary(x => x.id.Value,
+                x => x.shipBlueprint.ShipBlueprintName.Name);
+        return shipsNames;
+    }
 }
