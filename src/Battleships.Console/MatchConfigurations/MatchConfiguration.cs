@@ -71,4 +71,9 @@ public class MatchConfiguration
         
         return Fleet.Create(ships[0], ships.Skip(1).ToArray());
     }
+
+    public bool AreValid(Coordinates coordinates) =>
+        coordinates.X < Constrains.Width &&
+        coordinates.Y < Constrains.Height &&
+        coordinates is { X: >= 0, Y: >= 0 };
 }

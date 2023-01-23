@@ -8,5 +8,5 @@ public sealed record ShotMissedEvent(Coordinates Coordinates) : IMatchEvent;
 public sealed record ShotHitShipEvent(Coordinates Coordinates, FleetShipId FleetShipId) : IMatchEvent;
 public sealed record ShotSunkShipEvent(Coordinates Coordinates, FleetShipId FleetShipId) : IMatchEvent;
 public sealed record ShotSunkFleetEvent(Coordinates Coordinates, FleetShipId FleetShipId) : IMatchEvent;
-public sealed record MatchStartedEvent(MatchConfiguration MatchConfiguration) : IMatchEvent;
-public sealed record MatchOverEvent : IMatchEvent;
+public sealed record MatchStartedEvent(string MatchId, MatchConfiguration MatchConfiguration) : IMatchEvent;
+public sealed record MatchOverEvent(string MatchId) : IMatchEvent;

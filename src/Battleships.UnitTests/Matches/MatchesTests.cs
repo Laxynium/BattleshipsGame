@@ -11,7 +11,7 @@ public class MatchesTests
     public void initial_state_is_player_turn_state_which_allows_to_shoot_a_selected_target()
     {
         var fleet = Fleet.Create(CreateShip("1", (3, 3), (3, 4)));
-        var match = new Match(fleet);
+        var match = CreateMatch(fleet);
 
         var result = match.Handle(new ShootATarget((0, 0)));
 
@@ -23,7 +23,7 @@ public class MatchesTests
     public void hitting_a_ship_in_player_turn_state()
     {
         var fleet = Fleet.Create(CreateShip("1", (3, 3), (3, 4)));
-        var match = new Match(fleet);
+        var match = CreateMatch(fleet);
 
         var result = match.Handle(new ShootATarget((3, 3)));
 
@@ -37,7 +37,7 @@ public class MatchesTests
         var fleet = Fleet.Create(
             CreateShip("1", (3, 3), (3, 4)),
             CreateShip("2", (1, 1)));
-        var match = new Match(fleet);
+        var match = CreateMatch(fleet);
 
         var result = match.Handle(new ShootATarget((1, 1)));
 
@@ -50,7 +50,7 @@ public class MatchesTests
     {
         var fleet = Fleet.Create(
             CreateShip("1", (3, 4)));
-        var match = new Match(fleet);
+        var match = CreateMatch(fleet);
 
         var result = match.Handle(new ShootATarget((3, 4)));
 
@@ -63,7 +63,7 @@ public class MatchesTests
     {
         var fleet = Fleet.Create(
             CreateShip("1", (3, 4), (4, 4)));
-        var match = new Match(fleet);
+        var match = CreateMatch(fleet);
 
         var result = match.Handle(new ShootATarget((3, 3)));
 
@@ -76,7 +76,7 @@ public class MatchesTests
     {
         var fleet = Fleet.Create(
             CreateShip("1", (5, 5)));
-        var match = new Match(fleet);
+        var match = CreateMatch(fleet);
         match.Handle(new ShootATarget((5, 5)));
 
         var result = match.Handle(new ShootATarget((6, 6)));
@@ -92,7 +92,7 @@ public class MatchesTests
             CreateShip("1", (5, 5)),
             CreateShip("2", (6, 6)),
             CreateShip("3", (7, 7)));
-        var match = new Match(fleet);
+        var match = CreateMatch(fleet);
 
         match.Handle(new ShootATarget((5, 5))).IsSuccess.Should().BeTrue();
         match.Handle(new ShootATarget((6, 6))).IsSuccess.Should().BeTrue();
@@ -105,7 +105,7 @@ public class MatchesTests
     public void hitting_the_same_coordinates_of_ship_all_over_again_does_not_cause_it_to_sink()
     {
         var fleet = Fleet.Create(CreateShip("1", (5, 5), (5,6)));
-        var match = new Match(fleet);
+        var match = CreateMatch(fleet);
 
         var result = match.Handle(new ShootATarget((5, 5)));
         result.IsSuccess.Should().BeTrue();
@@ -119,4 +119,6 @@ public class MatchesTests
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().ContainEquivalentOf(new ShotHitShipEvent((5, 5), "1"));
     }
+
+    private Match CreateMatch(Fleet fleet) => new(fleet);
 }

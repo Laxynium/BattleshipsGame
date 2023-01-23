@@ -32,7 +32,7 @@ public class Match
             _matchOver = true;
             return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>
             {
-                matchEvent, new MatchOverEvent()
+                matchEvent, new MatchOverEvent("1")
             });
         }
         
