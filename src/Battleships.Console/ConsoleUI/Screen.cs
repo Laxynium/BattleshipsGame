@@ -6,7 +6,7 @@ namespace Battleships.Console.ConsoleUI;
 
 public class Screen
 {
-    private readonly StringBuilder _screen = new StringBuilder(1000);
+    private readonly StringBuilder _screen = new(1000);
 
     public void DisplayGameWelcomeScreen()
     {
@@ -26,8 +26,8 @@ public class Screen
             "Press any key to begin a match...");
         Render();
     }
-
-    public void DisplayMatchCockpit(MatchCockpitViewModel matchCockpit, string? lastError)
+    
+    public void UpdateMatchCockpit(MatchCockpitViewModel matchCockpit, string? lastError)
     {
         var logs = matchCockpit.Logs.Take(3)
             .Select(MapShotLogToString)
@@ -43,6 +43,11 @@ public class Screen
 
         _screen.Clear();
         AppendLines(lines);
+    }
+
+    public void DisplayMessageToTypeCoords()
+    {
+        AppendLines("Type your target coordinates: ");
         Render();
     }
 
@@ -54,7 +59,14 @@ public class Screen
             "Press any key to continue...");
         Render();
     }
-    
+
+    public void DisplayGoodbyeScreen()
+    {
+        _screen.Clear();
+        AppendLines(FiggleFonts.Banner.Render("See you back soon!"));
+        Render();
+    }
+
     private static string MapShotLogToString(ShotLog shotLog) =>
         shotLog.ShotResult switch
         {
@@ -78,11 +90,5 @@ public class Screen
         System.Console.Clear();
         System.Console.Write(_screen);
     }
-
-    public void DisplayGoodbyeScreen()
-    {
-        _screen.Clear();
-        AppendLines(FiggleFonts.Banner.Render("See you back soon!"));
-        Render();
-    }
+    
 }

@@ -2,7 +2,6 @@
 using Battleships.Console.Application.Fleets;
 using Battleships.Console.Application.MatchCockpit;
 using Battleships.Console.Application.MatchConfigurations;
-using CSharpFunctionalExtensions;
 
 namespace Battleships.Console.ConsoleUI;
 
@@ -26,106 +25,65 @@ public class Program
     {
         var gameFacade = new GameFacade(MatchConfiguration, FleetArranger);
         var screen = new Screen();
+        var breakLoop = false;
 
-        while (true)
+        while (!breakLoop)
         {
             screen.DisplayGameWelcomeScreen();
 
-            var menuInput = ReadGameMenuInput();
-            if (menuInput is null)
-            {
-                continue;
-            }
-
-            if (menuInput == "exit")
-            {
-                break;
-            }
-
-            screen.DisplayStartingAMatchInformation();
-
-            System.Console.ReadKey();
-
-            gameFacade.StartANewMatch();
-
-            var gameState = PlayAMatch(gameFacade, screen);
-
-            if (gameState == MatchStateDto.MatchOver)
-            {
-                screen.DisplayWinScreen();
-
-                System.Console.ReadKey();
-            }
+            var input = System.Console.ReadLine();
+            MenuAction.ParseMenuInput(input)
+                .Switch(
+                    statMatch => StartAMatch(screen, gameFacade),
+                    exit => breakLoop = true,
+                    invalid => { });
         }
 
         screen.DisplayGoodbyeScreen();
+    }
+
+    private static void StartAMatch(Screen screen, GameFacade gameFacade)
+    {
+        screen.DisplayStartingAMatchInformation();
+
+        System.Console.ReadKey();
+
+        gameFacade.StartANewMatch();
+
+        var gameState = PlayAMatch(gameFacade, screen);
+
+        if (gameState == MatchStateDto.MatchOver)
+        {
+            screen.DisplayWinScreen();
+
+            System.Console.ReadKey();
+        }
     }
 
     private static MatchStateDto PlayAMatch(GameFacade gameFacade, Screen screen)
     {
         var gameState = gameFacade.GetGameState();
         string? lastError = null;
+        var breakLoop = false;
 
-        while (gameState != MatchStateDto.MatchOver)
+        while (gameState != MatchStateDto.MatchOver && !breakLoop)
         {
             var matchCockpit = gameFacade.GetMatchCockpit()!;
 
-            screen.DisplayMatchCockpit(matchCockpit, lastError);
+            screen.UpdateMatchCockpit(matchCockpit, lastError);
+            screen.DisplayMessageToTypeCoords();
 
-            var userInput = ReadMatchUserInput();
-            if (userInput is MatchUserInput.StopMatch)
-            {
-                break;
-            }
-
-            if (userInput is MatchUserInput.TargetCoords coords)
-            {
-                var result = gameFacade.ShootATarget(coords.Value!);
-                lastError = result.IsFailure ? result.Error.Reason : null;
-            }
-
-            gameState = gameFacade.GetGameState();
+            var input = System.Console.ReadLine();
+            MatchAction.ParseMatchInput(input).Switch(
+                shootTarget =>
+                {
+                    var result = gameFacade.ShootATarget(shootTarget.Coords!);
+                    lastError = result.IsFailure ? result.Error.Reason : null;
+                    gameState = gameFacade.GetGameState();
+                },
+                stop => breakLoop = true);
         }
 
         return gameState;
-    }
-
-    private static string? ReadGameMenuInput() =>
-        System.Console.ReadLine() switch
-        {
-            "start" => "start",
-            "exit" => "exit",
-            _ => null
-        };
-
-    private static MatchUserInput ReadMatchUserInput()
-    {
-        System.Console.Write("Type your target coordinates: ");
-        var input = System.Console.ReadLine();
-
-        Func<string?, Maybe<MatchUserInput>>[] pipe =
-            { MatchUserInput.StopMatch.Parse, MatchUserInput.TargetCoords.Parse };
-
-        var result = pipe.Aggregate(Maybe<MatchUserInput>.None,
-            (acc, x) => acc.Or(x(input)));
-
-        return result.GetValueOrDefault(new MatchUserInput.TargetCoords(null));
-    }
-
-    private abstract record MatchUserInput
-    {
-        public record StopMatch : MatchUserInput
-        {
-            public static Maybe<MatchUserInput> Parse(string? input) =>
-                input == "stop"
-                    ? Maybe.From<MatchUserInput>(new StopMatch())
-                    : Maybe<MatchUserInput>.None;
-        }
-
-        public record TargetCoords(string? Value) : MatchUserInput
-        {
-            public static Maybe<MatchUserInput> Parse(string? input) =>
-                Maybe.From<MatchUserInput>(new TargetCoords(input));
-        }
     }
 }
