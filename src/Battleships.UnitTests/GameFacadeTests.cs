@@ -86,9 +86,9 @@ public class GameFacadeTests
             "J _ _ _ _ _ _ _ _ _ _",
         }));
         cockpit.Logs.Should().ContainInOrder(
-            new ShotLog("E5","hit","3"),
-            new ShotLog("D5", "hit", "3"),
-            new ShotLog("E4","miss",null));
+            new ShotLog("E5",ShotResultDto.Hit, "3"),
+            new ShotLog("D5", ShotResultDto.Hit, "3"),
+            new ShotLog("E4",ShotResultDto.Miss,null));
     }
 
     [Fact]
@@ -134,7 +134,7 @@ public class GameFacadeTests
             "J _ _ _ _ _ _ _ _ _ _",
         }));
         cockpit.Logs.Should().ContainInOrder(
-            new ShotLog("F5", "hit", "3"));
+            new ShotLog("F5", ShotResultDto.Hit, "3"));
     }
 
     [Fact]

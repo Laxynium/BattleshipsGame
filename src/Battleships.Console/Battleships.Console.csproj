@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <PackageReference Include="CSharpFunctionalExtensions" Version="2.37.0" />
+      <PackageReference Include="Figgle" Version="0.5.1" />
     </ItemGroup>
 
 </Project>

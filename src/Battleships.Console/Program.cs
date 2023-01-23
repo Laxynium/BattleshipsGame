@@ -1,11 +1,13 @@
-﻿using Battleships.Console.Fleets;
+﻿using System.Text;
+using Battleships.Console.Fleets;
 using Battleships.Console.MatchCockpit;
 using Battleships.Console.MatchConfigurations;
 using CSharpFunctionalExtensions;
+using Figgle;
 
 namespace Battleships.Console;
 
-public partial class Program
+public class Program
 {
     private static readonly MatchConfiguration MatchConfiguration = new(
         new GridConstrains(10, 10), ShipBlueprintsStock.Create(
@@ -24,12 +26,21 @@ public partial class Program
     private static void Main()
     {
         var gameFacade = new GameFacade(MatchConfiguration, FleetArranger);
+        var screenRenderer = new StringBuilder(1000);
+
+        StringBuilder Render(params string[] lines) => RenderUsing(screenRenderer, lines);
+        void Display() => DisplayUsing(screenRenderer);
+        void RenderMatchCockpit(string? lastError) => RenderMatchCockpitUsing(Render, gameFacade, lastError);
 
         while (true)
         {
-            System.Console.WriteLine("Type 'start' to start");
-            System.Console.WriteLine("Type 'exit' to exit a game");
-
+            Render(
+                FiggleFonts.Standard.Render("Battleships Game"),
+                "Type 'start' to start",
+                "Type 'exit' to exit a game"
+            );
+            Display();
+            
             var menuInput = ReadGameMenuInput();
             if (menuInput is null)
             {
@@ -41,14 +52,20 @@ public partial class Program
                 break;
             }
 
-            System.Console.WriteLine("Starting a match. Type 'stop' if you want to stop playing.");
-            
+            Render("Starting a match.",
+                "Type 'stop' if you want to stop playing.",
+                "Press any key to begin a match...");
+            Display();
+            System.Console.ReadKey();
+
             gameFacade.StartANewMatch();
             var gameState = gameFacade.GetGameState();
+            string? lastError = null;
 
             while (gameState != MatchStateDto.MatchOver)
             {
-                ShowMatchCockpit(gameFacade);
+                RenderMatchCockpit(lastError);
+                Display();
 
                 var userInput = ReadMatchUserInput();
                 if (userInput is MatchUserInput.StopMatch)
@@ -59,10 +76,7 @@ public partial class Program
                 if (userInput is MatchUserInput.TargetCoords coords)
                 {
                     var result = gameFacade.ShootATarget(coords.Value!);
-                    if (result.IsFailure)
-                    {
-                        System.Console.WriteLine(result.Error.Reason);
-                    }
+                    lastError = result.IsFailure ? result.Error.Reason : null;
                 }
 
                 gameState = gameFacade.GetGameState();
@@ -70,23 +84,63 @@ public partial class Program
 
             if (gameState == MatchStateDto.MatchOver)
             {
-                System.Console.WriteLine("Congratulations! You have won a battleship match");    
+                Render(FiggleFonts.Standard.Render("Congratulations!"),
+                    FiggleFonts.Banner.Render("You have won!"),
+                    "Press any key to continue...");
+                Display();
+                System.Console.ReadKey();
             }
         }
 
-        System.Console.WriteLine("See you back soon!");
+        Render("See you back soon!");
+        Display();
     }
 
-    private static void ShowMatchCockpit(GameFacade gameFacade)
+    private static StringBuilder RenderUsing(StringBuilder renderer, params string[] lines)
     {
-        System.Console.WriteLine();
-        var cockpit = gameFacade.GetMatchCockpit()!;
-        foreach (var gridLine in cockpit.TargetGrid.ToTextRepresentation())
+        renderer.Clear();
+        foreach (var line in lines)
         {
-            System.Console.WriteLine(gridLine);
+            renderer = renderer.AppendLine(line);
         }
-        System.Console.WriteLine();
+        return renderer;
     }
+
+    private static void DisplayUsing(StringBuilder renderer)
+    {
+        System.Console.Clear();
+        System.Console.Write(renderer);
+    }
+    
+    private static void RenderMatchCockpitUsing(Func<string[], StringBuilder> render, 
+        GameFacade gameFacade,
+        string? lastError)
+    {
+        var cockpit = gameFacade.GetMatchCockpit()!;
+        var logs = cockpit.Logs.Take(3)
+            .Select(MapShotLogToString)
+            .ToArray();
+        var error = lastError is not null ? new[] { "", lastError } : Array.Empty<string>();
+        var lines = new[] { "" }
+            .Concat(cockpit.TargetGrid.ToTextRepresentation())
+            .Concat(new []{""})
+            .Concat(logs)
+            .Concat(error)
+            .Concat(new[] { "" })
+            .ToArray();
+        
+        render(lines);
+    }
+
+    private static string MapShotLogToString(ShotLog shotLog) =>
+        shotLog.ShotResult switch
+        {
+            { } dto when dto == ShotResultDto.Miss => $"Shot at {shotLog.Coordinates} was a miss",
+            { } dto when dto == ShotResultDto.Hit => $"Shot at {shotLog.Coordinates} hit a ship {shotLog.ShipId}",
+            { } dto when dto == ShotResultDto.SunkShip => $"Shot at {shotLog.Coordinates} sunk a ship {shotLog.ShipId}",
+            { } dto when dto == ShotResultDto.SunkFleet => $"Shot at {shotLog.Coordinates} sunk a last one fleet ship {shotLog.ShipId}",
+            _ => throw new ArgumentOutOfRangeException()
+        };
 
     private static string? ReadGameMenuInput()
     {

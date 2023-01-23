@@ -40,28 +40,28 @@ public class MatchCockpitUpdater :
     public void Handle(ShotSunkFleetEvent @event)
     {
         PlaceAPeg(@event.Coordinates, Cell.RedPeg);
-        WriteALog(@event.Coordinates, "sunk_fleet", @event.FleetShipId.Value);
+        WriteALog(@event.Coordinates, ShotResultDto.SunkFleet, @event.FleetShipId.Value);
     }
 
     public void Handle(ShotSunkShipEvent @event)
     {
         PlaceAPeg(@event.Coordinates, Cell.RedPeg);
-        WriteALog(@event.Coordinates, "sunk_ship", @event.FleetShipId.Value);
+        WriteALog(@event.Coordinates, ShotResultDto.SunkShip, @event.FleetShipId.Value);
     }
 
     public void Handle(ShotHitShipEvent @event)
     {
         PlaceAPeg(@event.Coordinates, Cell.RedPeg);
-        WriteALog(@event.Coordinates, "hit", @event.FleetShipId.Value);
+        WriteALog(@event.Coordinates, ShotResultDto.Hit, @event.FleetShipId.Value);
     }
 
     public void Handle(ShotMissedEvent @event)
     {
         PlaceAPeg(@event.Coordinates, Cell.WhitePeg);
-        WriteALog(@event.Coordinates, "miss", null);
+        WriteALog(@event.Coordinates, ShotResultDto.Miss, null);
     }
 
-    private void WriteALog(Coordinates coordinates, string shotResult, string? shipId)
+    private void WriteALog(Coordinates coordinates, ShotResultDto shotResult, string? shipId)
     {
         var gridCoordinates = GridCoordinates.From(coordinates).ToString();
         _matchCockpitViewModel.Logs.Insert(0,new ShotLog(gridCoordinates, shotResult, shipId));
