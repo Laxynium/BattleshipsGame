@@ -1,10 +1,8 @@
-﻿using System.Text;
-using Battleships.Console.Application;
+﻿using Battleships.Console.Application;
 using Battleships.Console.Application.Fleets;
 using Battleships.Console.Application.MatchCockpit;
 using Battleships.Console.Application.MatchConfigurations;
 using CSharpFunctionalExtensions;
-using Figgle;
 
 namespace Battleships.Console.ConsoleUI;
 
@@ -12,8 +10,8 @@ public class Program
 {
     private static readonly MatchConfiguration MatchConfiguration = new(
         new GridConstrains(10, 10), ShipBlueprintsStock.Create(
-            ("1", ShipBlueprint.FromText("Battleship","-----")),
-            ("2", ShipBlueprint.FromText("Destroyer","----")),
+            ("1", ShipBlueprint.FromText("Battleship", "-----")),
+            ("2", ShipBlueprint.FromText("Destroyer", "----")),
             ("3", ShipBlueprint.FromText("Destroyer", "----"))));
 
     //TODO replace with random fleet arranger
@@ -27,21 +25,12 @@ public class Program
     private static void Main()
     {
         var gameFacade = new GameFacade(MatchConfiguration, FleetArranger);
-        var screenRenderer = new StringBuilder(1000);
-
-        StringBuilder Render(params string[] lines) => RenderUsing(screenRenderer, lines);
-        void Display() => DisplayUsing(screenRenderer);
-        void RenderMatchCockpit(string? lastError) => RenderMatchCockpitUsing(Render, gameFacade, lastError);
+        var screen = new Screen();
 
         while (true)
         {
-            Render(
-                FiggleFonts.Standard.Render("Battleships Game"),
-                "Type 'start' to start",
-                "Type 'exit' to exit a game"
-            );
-            Display();
-            
+            screen.DisplayGameWelcomeScreen();
+
             var menuInput = ReadGameMenuInput();
             if (menuInput is null)
             {
@@ -53,115 +42,71 @@ public class Program
                 break;
             }
 
-            Render("Starting a match.",
-                "Type 'stop' if you want to stop playing.",
-                "Press any key to begin a match...");
-            Display();
+            screen.DisplayStartingAMatchInformation();
+
             System.Console.ReadKey();
 
             gameFacade.StartANewMatch();
-            var gameState = gameFacade.GetGameState();
-            string? lastError = null;
 
-            while (gameState != MatchStateDto.MatchOver)
-            {
-                RenderMatchCockpit(lastError);
-                Display();
-
-                var userInput = ReadMatchUserInput();
-                if (userInput is MatchUserInput.StopMatch)
-                {
-                    break;
-                }
-
-                if (userInput is MatchUserInput.TargetCoords coords)
-                {
-                    var result = gameFacade.ShootATarget(coords.Value!);
-                    lastError = result.IsFailure ? result.Error.Reason : null;
-                }
-
-                gameState = gameFacade.GetGameState();
-            }
+            var gameState = PlayAMatch(gameFacade, screen);
 
             if (gameState == MatchStateDto.MatchOver)
             {
-                Render(FiggleFonts.Standard.Render("Congratulations!"),
-                    FiggleFonts.Banner.Render("You have won!"),
-                    "Press any key to continue...");
-                Display();
+                screen.DisplayWinScreen();
+
                 System.Console.ReadKey();
             }
         }
 
-        Render(FiggleFonts.Banner.Render("See you back soon!"));
-        Display();
+        screen.DisplayGoodbyeScreen();
     }
 
-    private static StringBuilder RenderUsing(StringBuilder renderer, params string[] lines)
+    private static MatchStateDto PlayAMatch(GameFacade gameFacade, Screen screen)
     {
-        renderer.Clear();
-        foreach (var line in lines)
+        var gameState = gameFacade.GetGameState();
+        string? lastError = null;
+
+        while (gameState != MatchStateDto.MatchOver)
         {
-            renderer = renderer.AppendLine(line);
+            var matchCockpit = gameFacade.GetMatchCockpit()!;
+
+            screen.DisplayMatchCockpit(matchCockpit, lastError);
+
+            var userInput = ReadMatchUserInput();
+            if (userInput is MatchUserInput.StopMatch)
+            {
+                break;
+            }
+
+            if (userInput is MatchUserInput.TargetCoords coords)
+            {
+                var result = gameFacade.ShootATarget(coords.Value!);
+                lastError = result.IsFailure ? result.Error.Reason : null;
+            }
+
+            gameState = gameFacade.GetGameState();
         }
-        return renderer;
+
+        return gameState;
     }
 
-    private static void DisplayUsing(StringBuilder renderer)
-    {
-        System.Console.Clear();
-        System.Console.Write(renderer);
-    }
-    
-    private static void RenderMatchCockpitUsing(Func<string[], StringBuilder> render, 
-        GameFacade gameFacade,
-        string? lastError)
-    {
-        var cockpit = gameFacade.GetMatchCockpit()!;
-        var logs = cockpit.Logs.Take(3)
-            .Select(MapShotLogToString)
-            .ToArray();
-        var error = lastError is not null ? new[] { "", lastError } : Array.Empty<string>();
-        var lines = new[] { "" }
-            .Concat(cockpit.TargetGrid.ToTextRepresentation())
-            .Concat(new []{""})
-            .Concat(logs)
-            .Concat(error)
-            .Concat(new[] { "" })
-            .ToArray();
-        
-        render(lines);
-    }
-
-    private static string MapShotLogToString(ShotLog shotLog) =>
-        shotLog.ShotResult switch
-        {
-            { } dto when dto == ShotResultDto.Miss => $"Shot at {shotLog.Coordinates} was a miss",
-            { } dto when dto == ShotResultDto.Hit => $"Shot at {shotLog.Coordinates} hit a {shotLog.ShipName}({shotLog.ShipId})",
-            { } dto when dto == ShotResultDto.SunkShip => $"Shot at {shotLog.Coordinates} sunk a {shotLog.ShipName}({shotLog.ShipId})",
-            { } dto when dto == ShotResultDto.SunkFleet => $"Shot at {shotLog.Coordinates} sunk a last one fleet ship which was {shotLog.ShipName}({shotLog.ShipId})",
-            _ => throw new ArgumentOutOfRangeException()
-        };
-
-    private static string? ReadGameMenuInput()
-    {
-        var input = System.Console.ReadLine();
-        return input switch
+    private static string? ReadGameMenuInput() =>
+        System.Console.ReadLine() switch
         {
             "start" => "start",
             "exit" => "exit",
             _ => null
         };
-    }
-    
+
     private static MatchUserInput ReadMatchUserInput()
     {
         System.Console.Write("Type your target coordinates: ");
         var input = System.Console.ReadLine();
 
-        Func<string?, Maybe<MatchUserInput>>[] pipe = new[] { MatchUserInput.StopMatch.Parse, MatchUserInput.TargetCoords.Parse };
+        Func<string?, Maybe<MatchUserInput>>[] pipe =
+            { MatchUserInput.StopMatch.Parse, MatchUserInput.TargetCoords.Parse };
 
-        var result = pipe.Aggregate(Maybe<MatchUserInput>.None, 
+        var result = pipe.Aggregate(Maybe<MatchUserInput>.None,
             (acc, x) => acc.Or(x(input)));
 
         return result.GetValueOrDefault(new MatchUserInput.TargetCoords(null));
@@ -171,22 +116,16 @@ public class Program
     {
         public record StopMatch : MatchUserInput
         {
-            public static Maybe<MatchUserInput> Parse(string? input)
-            {
-                if (input == "stop")
-                {
-                    return Maybe.From<MatchUserInput>(new StopMatch());
-                }
-                return Maybe<MatchUserInput>.None;
-            }
+            public static Maybe<MatchUserInput> Parse(string? input) =>
+                input == "stop"
+                    ? Maybe.From<MatchUserInput>(new StopMatch())
+                    : Maybe<MatchUserInput>.None;
         }
 
         public record TargetCoords(string? Value) : MatchUserInput
         {
-            public static Maybe<MatchUserInput> Parse(string? input)
-            {
-                return Maybe.From<MatchUserInput>(new TargetCoords(input));
-            }
+            public static Maybe<MatchUserInput> Parse(string? input) =>
+                Maybe.From<MatchUserInput>(new TargetCoords(input));
         }
     }
 }
