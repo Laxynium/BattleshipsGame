@@ -47,16 +47,16 @@ public class MatchViewModelStore :
 
     public void Handle(MatchStartedEvent @event)
     {
-        _viewModels[@event.MatchId] = new MatchViewModel
+        _viewModels[@event.MatchId] = new MatchViewModel(InitialMatchCockpit(@event.MatchConfiguration), MatchStateDto.PlayerTurn)
         {
             Cockpit = InitialMatchCockpit(@event.MatchConfiguration),
-            State = "player_turn"
+            State = MatchStateDto.PlayerTurn
         };
     }
 
     public void Handle(MatchOverEvent @event)
     {
-        _viewModels[@event.MatchId].State = "match_over";
+        _viewModels[@event.MatchId] = _viewModels[@event.MatchId] with{State = MatchStateDto.MatchOver};
     }
 
     private static MatchCockpitViewModel InitialMatchCockpit(MatchConfiguration matchConfiguration) =>

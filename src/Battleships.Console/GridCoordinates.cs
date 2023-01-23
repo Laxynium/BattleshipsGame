@@ -18,18 +18,18 @@ public class GridCoordinates : ValueObject
     {
         if (text is null || text.Length < 2)
         {
-            return Result.Failure<GridCoordinates>("Invalid format of coords");
+            return Result.Failure<GridCoordinates>("Provided coordinates are in invalid format.");
         }
         
         var rowCoord = text[0];
         if (rowCoord is < 'A' or > 'Z')
         {
-            return Result.Failure<GridCoordinates>("Row coord out of range");
+            return Result.Failure<GridCoordinates>("Row coordinate has to be a letter from A-Z.");
         }
 
         if (!int.TryParse(new string(text.Skip(1).ToArray()), out var columnCoord))
         {
-            return Result.Failure<GridCoordinates>("Column coord needs to be a number");
+            return Result.Failure<GridCoordinates>("Column coordinate has to be a number.");
         }
         
         return Result.Success(new GridCoordinates(rowCoord, columnCoord));

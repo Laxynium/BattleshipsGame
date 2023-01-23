@@ -24,8 +24,10 @@ public class Match
         }
         
         if (command is not ShootATarget shootATarget)
+        {
             return Result.Success<IReadOnlyCollection<MatchEvent>>(new List<MatchEvent>());
-        
+        }
+
         var result = _fleet.ReceiveShot(shootATarget.Coordinates);
 
         var matchEvent = ToMatchEvent(result, shootATarget.Coordinates);

@@ -1,6 +1,7 @@
 ﻿using Battleships.Console.MatchCockpit;
 using Battleships.Console.MatchConfigurations;
 using Battleships.Console.Matches;
+using CSharpFunctionalExtensions;
 
 namespace Battleships.Console;
 
@@ -28,49 +29,51 @@ public class GameFacade
         _viewModelStore.Handle(new MatchStartedEvent(MatchId, _matchConfiguration));
     }
 
-    public void ShootATarget(string gridCoordinates)
+    public IUnitResult<BattleshipsErrorResponse> ShootATarget(string gridCoordinates)
     {
-        var coordinates = GridCoordinates.From(gridCoordinates).ToFleetCoords();
-        if (!_matchConfiguration.AreValid(coordinates))
+        if (string.IsNullOrWhiteSpace(gridCoordinates))
         {
-            throw new ArgumentException("Provided coords are out of grid constraints");
+            return UnitResult.Failure(new BattleshipsErrorResponse("Target coordinates cannot be empty"));
+        }
+
+        var fleetCoordinates = GridCoordinates
+            .Parse(gridCoordinates)
+            .Map(x => x.ToFleetCoords());
+
+        if (fleetCoordinates.IsFailure)
+        {
+            return UnitResult.Failure(new BattleshipsErrorResponse(fleetCoordinates.Error));
+        }
+        
+        if (!_matchConfiguration.AreValid(fleetCoordinates.Value))
+        {
+            return UnitResult.Failure(new BattleshipsErrorResponse("Target coordinates must be inside grid"));
         }
 
         var match = _matchRepository.Load(MatchId);
         if (match is null)
         {
-            throw new InvalidOperationException("Match has to be started first");
+            return UnitResult.Failure(new BattleshipsErrorResponse("Started match was not found"));
         }
 
-        var result = match.Handle(new ShootATarget(coordinates));
+        var result = match.Handle(new ShootATarget(fleetCoordinates.Value));
         if (result.IsFailure)
         {
-            throw new Exception(result.Error);
+            return UnitResult.Failure(new BattleshipsErrorResponse(result.Error));
         }
 
         _matchRepository.Save(match);
         _viewModelStore.Handle(result.Value);
+        
+        return UnitResult.Success<BattleshipsErrorResponse>();
     }
 
-    public MatchCockpitViewModel GetMatchCockpit()
+    public MatchCockpitViewModel? GetMatchCockpit() => 
+        _viewModelStore.GetMatchViewModel(MatchId)?.Cockpit;
+
+    public MatchStateDto GetGameState()
     {
         var viewModel = _viewModelStore.GetMatchViewModel(MatchId);
-        if (viewModel is null)
-        {
-            throw new InvalidOperationException("Match has to be started first");
-        }
-
-        return viewModel.Cockpit;
-    }
-
-    public string GetGameState()
-    {
-        var viewModel = _viewModelStore.GetMatchViewModel(MatchId);
-        if (viewModel is null)
-        {
-            throw new InvalidOperationException("Match has to be started first");
-        }
-
-        return viewModel.State;
+        return viewModel is null ? MatchStateDto.WaitingForMatch : viewModel.State;
     }
 }
