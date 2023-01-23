@@ -15,7 +15,7 @@ public class MatchCockpitUpdater :
     public MatchCockpitUpdater(MatchCockpitViewModel matchCockpitViewModel, MatchConfigurationDto matchConfiguration)
     {
         _matchCockpitViewModel = matchCockpitViewModel;
-        this._matchConfiguration = matchConfiguration;
+        _matchConfiguration = matchConfiguration;
     }
 
     public void Handle(MatchEvent matchEvent)

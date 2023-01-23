@@ -42,11 +42,6 @@ public record Fleet
         return new ShotResult.Miss();
     }
 
-    public Fleet CreateACopy()
-    {
-        return new Fleet(_ships.Select(s => s.Copy()));
-    }
-    
     private bool IsFleetSunk()
     {
         return _ships.All(x => x.IsSunk());
@@ -60,10 +55,4 @@ public record Fleet
             ShotResult.FleetSunk (var id) => id,
             _ => throw new ArgumentOutOfRangeException(nameof(shotResult), shotResult, null)
         };
-
-
-    private static IEnumerable<(T x, T y)> CartesianProduct<T>(IList<T> items) =>
-        from x in items
-        from y in items
-        select (x, y);
 }

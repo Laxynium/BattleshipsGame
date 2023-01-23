@@ -32,8 +32,4 @@ public record FleetShip
 
     public bool IsSunk() => 
         _holes.Values.All(x => x == true);
-
-    public FleetShip Copy() => new(
-        new FleetShipId(_id.Value), 
-        _holes.Keys.Select(h => new Coordinates(h.X, h.Y)));
 }
