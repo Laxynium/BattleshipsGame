@@ -6,7 +6,7 @@ using Battleships.Console.Application.MatchConfigurations;
 using CSharpFunctionalExtensions;
 using Figgle;
 
-namespace Battleships.Console;
+namespace Battleships.Console.ConsoleUI;
 
 public class Program
 {
