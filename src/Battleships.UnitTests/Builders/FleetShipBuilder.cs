@@ -1,4 +1,4 @@
-﻿using Battleships.Console.Fleets;
+﻿using Battleships.Console.Application.Fleets;
 using static Battleships.UnitTests.Builders.CoordinatesSetBuilder;
 
 namespace Battleships.UnitTests.Builders;

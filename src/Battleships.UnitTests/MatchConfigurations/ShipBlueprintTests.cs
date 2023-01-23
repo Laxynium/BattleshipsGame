@@ -1,4 +1,4 @@
-﻿using Battleships.Console.MatchConfigurations;
+﻿using Battleships.Console.Application.MatchConfigurations;
 using FluentAssertions;
 using static Battleships.UnitTests.Builders.CoordinatesSetBuilder;
 namespace Battleships.UnitTests.MatchConfigurations;

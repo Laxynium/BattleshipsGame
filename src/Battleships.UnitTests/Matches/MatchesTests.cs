@@ -1,5 +1,5 @@
-﻿using Battleships.Console.Fleets;
-using Battleships.Console.Matches;
+﻿using Battleships.Console.Application.Fleets;
+using Battleships.Console.Application.Matches;
 using FluentAssertions;
 using static Battleships.UnitTests.Builders.FleetShipBuilder;
 

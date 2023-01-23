@@ -1,6 +1,7 @@
 ﻿using Battleships.Console;
-using Battleships.Console.Fleets;
-using Battleships.Console.MatchConfigurations;
+using Battleships.Console.Application;
+using Battleships.Console.Application.Fleets;
+using Battleships.Console.Application.MatchConfigurations;
 using FluentAssertions;
 
 namespace Battleships.UnitTests.MatchConfigurations;

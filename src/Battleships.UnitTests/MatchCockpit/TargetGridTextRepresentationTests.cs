@@ -1,4 +1,4 @@
-﻿using Battleships.Console.MatchCockpit;
+﻿using Battleships.Console.Application.MatchCockpit;
 using FluentAssertions;
 
 namespace Battleships.UnitTests.MatchCockpit;

@@ -1,5 +1,6 @@
 ﻿using Battleships.Console;
-using Battleships.Console.Fleets;
+using Battleships.Console.Application;
+using Battleships.Console.Application.Fleets;
 using FluentAssertions;
 
 namespace Battleships.UnitTests;
