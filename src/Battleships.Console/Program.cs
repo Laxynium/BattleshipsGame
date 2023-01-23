@@ -40,6 +40,8 @@ public partial class Program
             {
                 break;
             }
+
+            System.Console.WriteLine("Starting a match. Type 'stop' if you want to stop playing.");
             
             gameFacade.StartANewMatch();
             var gameState = gameFacade.GetGameState();
