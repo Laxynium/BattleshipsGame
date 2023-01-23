@@ -1,0 +1,11 @@
+﻿version: "3.8"
+
+services:
+  battleships:
+    image: battleships
+    container_name: battleships
+    build:
+      context: .
+      dockerfile: src/Battleships.Console/Dockerfile  
+    stdin_open: true
+    tty: true
