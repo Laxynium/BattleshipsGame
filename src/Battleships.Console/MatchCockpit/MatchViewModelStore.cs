@@ -19,7 +19,7 @@ public class MatchViewModelStore :
         return _viewModels[matchId];
     }
 
-    public void Handle(IEnumerable<IMatchEvent> matchEvents)
+    public void Handle(IEnumerable<MatchEvent> matchEvents)
     {
         foreach (var matchEvent in matchEvents)
         {
@@ -27,7 +27,7 @@ public class MatchViewModelStore :
         }
     }
     
-    public void Handle(IMatchEvent matchEvent)
+    public void Handle(MatchEvent matchEvent)
     {
         switch (matchEvent)
         {
@@ -38,7 +38,7 @@ public class MatchViewModelStore :
                 Handle(e);
                 break;
             default:
-                new MatchCockpitUpdater(_viewModels["1"].Cockpit)
+                new MatchCockpitUpdater(_viewModels[matchEvent.MatchId].Cockpit)
                     .Handle(matchEvent);
                 break;
         }

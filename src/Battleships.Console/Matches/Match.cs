@@ -5,23 +5,26 @@ namespace Battleships.Console.Matches;
 
 public class Match
 {
+    public string Id { get; }
     private readonly Fleet _fleet;
     private bool _matchOver;
 
-    public Match(Fleet fleet)
+    public Match(string id, Fleet fleet)
     {
+        Id = id;
         _fleet = fleet;
+        _matchOver = false;
     }
     
-    public Result<IReadOnlyCollection<IMatchEvent>> Handle(IMatchCommand command)
+    public Result<IReadOnlyCollection<MatchEvent>> Handle(IMatchCommand command)
     {
         if (_matchOver)
         {
-            return Result.Failure<IReadOnlyCollection<IMatchEvent>>("Match has ended, cannot accept any more commands");
+            return Result.Failure<IReadOnlyCollection<MatchEvent>>("Match has ended, cannot accept any more commands");
         }
         
         if (command is not ShootATarget shootATarget)
-            return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>());
+            return Result.Success<IReadOnlyCollection<MatchEvent>>(new List<MatchEvent>());
         
         var result = _fleet.ReceiveShot(shootATarget.Coordinates);
 
@@ -30,25 +33,25 @@ public class Match
         if (matchEvent is ShotSunkFleetEvent)
         {
             _matchOver = true;
-            return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>
+            return Result.Success<IReadOnlyCollection<MatchEvent>>(new List<MatchEvent>
             {
-                matchEvent, new MatchOverEvent("1")
+                matchEvent, new MatchOverEvent(Id)
             });
         }
         
-        return Result.Success<IReadOnlyCollection<IMatchEvent>>(new List<IMatchEvent>
+        return Result.Success<IReadOnlyCollection<MatchEvent>>(new List<MatchEvent>
         {
             matchEvent
         });
     }
 
-    private static IMatchEvent ToMatchEvent(ShotResult shotResult, Coordinates coordinates) =>
+    private MatchEvent ToMatchEvent(ShotResult shotResult, Coordinates coordinates) =>
         shotResult switch
         {
-            ShotResult.FleetSunk (var id) => new ShotSunkFleetEvent(coordinates, id),
-            ShotResult.Sunk (var id) => new ShotSunkShipEvent(coordinates, id),
-            ShotResult.Hit (var id) => new ShotHitShipEvent(coordinates, id),
-            ShotResult.Miss => new ShotMissedEvent(coordinates),
+            ShotResult.FleetSunk (var shipId) => new ShotSunkFleetEvent(Id, coordinates, shipId),
+            ShotResult.Sunk (var shipId) => new ShotSunkShipEvent(Id, coordinates, shipId),
+            ShotResult.Hit (var shipId) => new ShotHitShipEvent(Id, coordinates, shipId),
+            ShotResult.Miss => new ShotMissedEvent(Id, coordinates),
             _ => throw new ArgumentOutOfRangeException(nameof(shotResult), shotResult, null)
         };
 }

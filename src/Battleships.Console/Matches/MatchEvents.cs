@@ -3,10 +3,10 @@ using Battleships.Console.MatchConfigurations;
 
 namespace Battleships.Console.Matches;
 
-public interface IMatchEvent { }
-public sealed record ShotMissedEvent(Coordinates Coordinates) : IMatchEvent;
-public sealed record ShotHitShipEvent(Coordinates Coordinates, FleetShipId FleetShipId) : IMatchEvent;
-public sealed record ShotSunkShipEvent(Coordinates Coordinates, FleetShipId FleetShipId) : IMatchEvent;
-public sealed record ShotSunkFleetEvent(Coordinates Coordinates, FleetShipId FleetShipId) : IMatchEvent;
-public sealed record MatchStartedEvent(string MatchId, MatchConfiguration MatchConfiguration) : IMatchEvent;
-public sealed record MatchOverEvent(string MatchId) : IMatchEvent;
+public abstract record MatchEvent(string MatchId);
+public sealed record ShotMissedEvent(string MatchId, Coordinates Coordinates) : MatchEvent(MatchId);
+public sealed record ShotHitShipEvent(string MatchId, Coordinates Coordinates, FleetShipId FleetShipId) : MatchEvent(MatchId);
+public sealed record ShotSunkShipEvent(string MatchId, Coordinates Coordinates, FleetShipId FleetShipId) : MatchEvent(MatchId);
+public sealed record ShotSunkFleetEvent(string MatchId, Coordinates Coordinates, FleetShipId FleetShipId) : MatchEvent(MatchId);
+public sealed record MatchStartedEvent(string MatchId, MatchConfiguration MatchConfiguration) : MatchEvent(MatchId);
+public sealed record MatchOverEvent(string MatchId) : MatchEvent(MatchId);

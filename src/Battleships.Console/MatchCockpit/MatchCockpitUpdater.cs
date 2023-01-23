@@ -16,7 +16,7 @@ public class MatchCockpitUpdater :
         _matchCockpitViewModel = matchCockpitViewModel;
     }
 
-    public void Handle(IMatchEvent matchEvent)
+    public void Handle(MatchEvent matchEvent)
     {
         switch (matchEvent)
         {

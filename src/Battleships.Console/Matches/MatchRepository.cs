@@ -4,9 +4,9 @@ public class MatchRepository
 {
     private readonly Dictionary<string, Match> _matches = new();
     
-    public void Save((string id, Match match) match)
+    public void Save(Match match)
     {
-        _matches[match.id] = match.match;
+        _matches[match.Id] = match;
     }
 
     public Match? Load(string id)
