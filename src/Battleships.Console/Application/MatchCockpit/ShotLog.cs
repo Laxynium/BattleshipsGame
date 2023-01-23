@@ -13,4 +13,4 @@ public class ShotResultDto : EnumValueObject<ShotResultDto>
     {
     }
 }
-public record ShotLog(string Coordinates, ShotResultDto ShotResult, string? ShipId);
+public record ShotLog(string Coordinates, ShotResultDto ShotResult, string? ShipId, string? ShipName);

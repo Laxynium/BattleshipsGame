@@ -64,7 +64,7 @@ public class MatchCockpitUpdater :
     private void WriteALog(Coordinates coordinates, ShotResultDto shotResult, string? shipId)
     {
         var gridCoordinates = GridCoordinates.From(coordinates).ToString();
-        _matchCockpitViewModel.Logs.Insert(0,new ShotLog(gridCoordinates, shotResult, shipId));
+        _matchCockpitViewModel.Logs.Insert(0,new ShotLog(gridCoordinates, shotResult, shipId, shipId != null ? "empty_ship_name": null));
     }
 
     private void PlaceAPeg(Coordinates coordinates, Cell peg)

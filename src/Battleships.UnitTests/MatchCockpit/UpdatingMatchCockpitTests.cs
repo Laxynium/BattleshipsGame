@@ -117,7 +117,7 @@ public class UpdatingMatchCockpitTests
 
         matchCockpitUpdater.Handle(new ShotMissedEvent("1", AFleetCoordinates("D1")));
 
-        matchCockpit.Logs.Should().ContainInOrder(new ShotLog("D1", ShotResultDto.Miss, null));
+        matchCockpit.Logs.Should().ContainInOrder(new ShotLog("D1", ShotResultDto.Miss, null, null));
     }
 
     [Fact]
@@ -128,7 +128,7 @@ public class UpdatingMatchCockpitTests
 
         matchCockpitUpdater.Handle(new ShotHitShipEvent("1", AFleetCoordinates("D3"), new FleetShipId("3")));
 
-        matchCockpit.Logs.Should().ContainInOrder(new ShotLog("D3", ShotResultDto.Hit, "3"));
+        matchCockpit.Logs.Should().ContainInOrder(new ShotLog("D3", ShotResultDto.Hit, "3", "empty_ship_name"));
     }
 
     [Fact]
@@ -139,7 +139,7 @@ public class UpdatingMatchCockpitTests
 
         matchCockpitUpdater.Handle(new ShotSunkShipEvent("1", AFleetCoordinates("B3"), new FleetShipId("2")));
 
-        matchCockpit.Logs.Should().ContainInOrder(new ShotLog("B3", ShotResultDto.SunkShip, "2"));
+        matchCockpit.Logs.Should().ContainInOrder(new ShotLog("B3", ShotResultDto.SunkShip, "2", "empty_ship_name"));
     }
 
     [Fact]
@@ -150,7 +150,7 @@ public class UpdatingMatchCockpitTests
 
         matchCockpitUpdater.Handle(new ShotSunkFleetEvent("1", AFleetCoordinates("A4"), new FleetShipId("1")));
 
-        matchCockpit.Logs.Should().ContainInOrder(new ShotLog("A4", ShotResultDto.SunkFleet, "1"));
+        matchCockpit.Logs.Should().ContainInOrder(new ShotLog("A4", ShotResultDto.SunkFleet, "1","empty_ship_name"));
     }
 
     [Fact]
@@ -166,11 +166,11 @@ public class UpdatingMatchCockpitTests
         matchCockpitUpdater.Handle(new ShotSunkShipEvent("1", AFleetCoordinates("C3"), new FleetShipId("1")));
 
         matchCockpit.Logs.Should().ContainInOrder(
-            new ShotLog("C3", ShotResultDto.SunkShip, "1"),
-            new ShotLog("B3", ShotResultDto.Hit, "1"),
-            new ShotLog("D1", ShotResultDto.Hit, "2"),
-            new ShotLog("A3", ShotResultDto.Hit, "1"),
-            new ShotLog("A4", ShotResultDto.Miss, null));
+            new ShotLog("C3", ShotResultDto.SunkShip, "1", "empty_ship_name"),
+            new ShotLog("B3", ShotResultDto.Hit, "1", "empty_ship_name"),
+            new ShotLog("D1", ShotResultDto.Hit, "2", "empty_ship_name"),
+            new ShotLog("A3", ShotResultDto.Hit, "1", "empty_ship_name"),
+            new ShotLog("A4", ShotResultDto.Miss, null, null));
     }
 
     private static Coordinates AFleetCoordinates(string gridCoordinates) =>
