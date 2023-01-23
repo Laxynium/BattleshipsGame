@@ -3,9 +3,7 @@ using Battleships.Console.Application.Matches;
 
 namespace Battleships.Console.Application.MatchCockpit;
 
-public class MatchViewModelStore :
-    IMatchEventHandler<MatchStartedEvent>,
-    IMatchEventHandler<MatchOverEvent>
+public class MatchViewModelStore
 {
     private readonly Dictionary<string, MatchViewModel> _viewModels = new();
 
@@ -27,7 +25,7 @@ public class MatchViewModelStore :
         }
     }
 
-    public void Handle(MatchEvent matchEvent)
+    private void Handle(MatchEvent matchEvent)
     {
         switch (matchEvent)
         {

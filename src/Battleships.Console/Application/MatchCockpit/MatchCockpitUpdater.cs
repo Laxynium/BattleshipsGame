@@ -3,11 +3,7 @@ using Battleships.Console.Application.Matches;
 
 namespace Battleships.Console.Application.MatchCockpit;
 
-public class MatchCockpitUpdater :
-    IMatchEventHandler<ShotSunkFleetEvent>,
-    IMatchEventHandler<ShotSunkShipEvent>,
-    IMatchEventHandler<ShotHitShipEvent>,
-    IMatchEventHandler<ShotMissedEvent>
+public class MatchCockpitUpdater
 {
     private readonly MatchCockpitViewModel _matchCockpitViewModel;
     private readonly MatchConfigurationDto _matchConfiguration;
@@ -39,25 +35,25 @@ public class MatchCockpitUpdater :
         }
     }
 
-    public void Handle(ShotSunkFleetEvent @event)
+    private void Handle(ShotSunkFleetEvent @event)
     {
         PlaceAPeg(@event.Coordinates, Cell.RedPeg);
         WriteALog(@event.Coordinates, ShotResultDto.SunkFleet, @event.FleetShipId.Value);
     }
 
-    public void Handle(ShotSunkShipEvent @event)
+    private void Handle(ShotSunkShipEvent @event)
     {
         PlaceAPeg(@event.Coordinates, Cell.RedPeg);
         WriteALog(@event.Coordinates, ShotResultDto.SunkShip, @event.FleetShipId.Value);
     }
 
-    public void Handle(ShotHitShipEvent @event)
+    private void Handle(ShotHitShipEvent @event)
     {
         PlaceAPeg(@event.Coordinates, Cell.RedPeg);
         WriteALog(@event.Coordinates, ShotResultDto.Hit, @event.FleetShipId.Value);
     }
 
-    public void Handle(ShotMissedEvent @event)
+    private void Handle(ShotMissedEvent @event)
     {
         PlaceAPeg(@event.Coordinates, Cell.WhitePeg);
         WriteALog(@event.Coordinates, ShotResultDto.Miss, null);
