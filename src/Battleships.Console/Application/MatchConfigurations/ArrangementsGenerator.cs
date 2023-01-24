@@ -49,16 +49,17 @@ public class ArrangementsGenerator
             .ToHashSet();
     }
 
-    // public static IReadOnlyCollection<CoordinatesSet> GenerateUsingBothTranslationsAndRotationsFor(
-    //     ShipBlueprint shipBlueprint, GridConstrains gridConstrains)
-    // {
-    //     var rotations = GenerateUsingRotationsFor(shipBlueprint, gridConstrains);
-    //
-    //     foreach (var rotation in rotations)
-    //     {
-    //         GenerateUsingTranslationsFor(shipBlueprint)
-    //     }
-    // }
+    public static IReadOnlyCollection<CoordinatesSet> GenerateFor(
+        CoordinatesSet ship, GridConstrains gridConstrains)
+    {
+        var normalized = NormalizeToOrigin(ship);
+
+        var rotations = GenerateUsingRotationsFor(normalized, gridConstrains);
+
+        return rotations.SelectMany(rotation => 
+            GenerateUsingTranslationsFor(rotation, gridConstrains))
+            .ToHashSet();
+    }
 
     private static CoordinatesSet NormalizeToOrigin(CoordinatesSet set)
     {

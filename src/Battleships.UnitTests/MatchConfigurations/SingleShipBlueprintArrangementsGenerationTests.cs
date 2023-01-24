@@ -126,7 +126,51 @@ public class SingleShipBlueprintArrangementsGenerationTests
     {
         var shipBlueprint = ShipBlueprint.FromText("a", "--");
 
-        // var result = ArrangementsGenerator.GenerateUsingBothTranslationsAndRotationsFor(shipBlueprint, 
-        //     new GridConstrains(3, 3));
+        var result = ArrangementsGenerator.GenerateFor(shipBlueprint.Set, 
+            new GridConstrains(3, 3));
+
+        result.Should().HaveCount(12);
+        result.Should().Contain(new[]
+        {
+            CoordinatesSet.Create((0, 0), (1, 0)),
+            CoordinatesSet.Create((1, 0), (2, 0)),
+            
+            CoordinatesSet.Create((0, 1), (1, 1)),
+            CoordinatesSet.Create((1, 1), (2, 1)),
+            
+            CoordinatesSet.Create((0, 2), (1, 2)),
+            CoordinatesSet.Create((1, 2), (2, 2)),
+            
+            
+            CoordinatesSet.Create((0, 0), (0, 1)),
+            CoordinatesSet.Create((0, 1), (0, 2)),
+            
+            CoordinatesSet.Create((1, 0), (1, 1)),
+            CoordinatesSet.Create((1, 1), (1, 2)),
+            
+            CoordinatesSet.Create((2, 0), (2, 1)),
+            CoordinatesSet.Create((2, 1), (2, 2)),
+        });
+    }
+    
+    [Fact]
+    public void generate_using_both_rotations_and_translations_for_ship_of_size_2_on_2x3_grid()
+    {
+        var shipBlueprint = ShipBlueprint.FromText("a", "---");
+
+        var result = ArrangementsGenerator.GenerateFor(shipBlueprint.Set, 
+            new GridConstrains(2, 4));
+
+        result.Should().HaveCount(4);
+        result.Should().Contain(new[]
+        {
+            
+            CoordinatesSet.Create((0, 0), (0, 1), (0,2)),
+            CoordinatesSet.Create((0, 1), (0, 2), (0,3)),
+            
+
+            CoordinatesSet.Create((1, 0), (1, 1), (1,2)),
+            CoordinatesSet.Create((1, 1), (1, 2), (1,3)),
+        });
     }
 }
