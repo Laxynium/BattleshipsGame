@@ -2,6 +2,8 @@
 
 namespace Battleships.Console.Application.Fleets;
 
+public enum CounterclockwiseRotation{Rotation0, Rotation90, Rotation180, Rotation270}
+
 public sealed class CoordinatesSet : ValueObject
 {
     private readonly HashSet<Coordinates> _set;
@@ -28,6 +30,23 @@ public sealed class CoordinatesSet : ValueObject
         CartesianProduct(coordinatesSets)
             .Where(c => c.x != c.y)
             .Any(c => c.x.IsOverlappingWith(c.y));
+
+    public ((int minX, int maxX), (int minY, int maxY)) GetBoundaries() =>
+        ((_set.Min(x => x.X), _set.Max(x => x.X)),
+            (_set.Min(x => x.Y), _set.Max(x => x.Y)));
+
+    public CoordinatesSet Translate(int x, int y) => 
+        new(_set.Select(c => new Coordinates(c.X + x, c.Y + y)));
+
+    public CoordinatesSet Rotate(CounterclockwiseRotation rotation) =>
+        new(_set.Select(x => rotation switch
+        {
+            CounterclockwiseRotation.Rotation0 => x,
+            CounterclockwiseRotation.Rotation90 => (-x.Y, x.X),
+            CounterclockwiseRotation.Rotation180 => (-x.X, -x.Y),
+            CounterclockwiseRotation.Rotation270 => (x.Y, -x.X),
+            _ => throw new ArgumentOutOfRangeException(nameof(rotation), rotation, null)
+        }));
 
     private static bool AreCoordinatesConnect(IReadOnlyCollection<Coordinates> collection)
     {
