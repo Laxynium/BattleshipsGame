@@ -12,7 +12,6 @@ public class Program
             ("2", ShipBlueprint.FromText("Destroyer", "----")),
             ("3", ShipBlueprint.FromText("Destroyer", "----"))));
 
-    //TODO replace with random fleet arranger
     private static readonly IFleetArranger FleetArranger = new RandomFleetArranger();
 
     private static void Main()
