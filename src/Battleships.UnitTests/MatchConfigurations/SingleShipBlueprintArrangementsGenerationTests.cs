@@ -11,7 +11,7 @@ public class SingleShipBlueprintArrangementsGenerationTests
     {
         var shipBlueprint = ShipBlueprint.FromText("a", "-");
 
-        var result = ArrangementsGenerator.GenerateUsingTranslationsFor(shipBlueprint, 
+        var result = ArrangementsGenerator.GenerateUsingTranslationsFor(shipBlueprint.Set,
             new GridConstrains(3, 3));
 
         result.Should().HaveCount(9);
@@ -34,7 +34,7 @@ public class SingleShipBlueprintArrangementsGenerationTests
     {
         var shipBlueprint = ShipBlueprint.FromText("a", "--");
 
-        var result = ArrangementsGenerator.GenerateUsingTranslationsFor(shipBlueprint, 
+        var result = ArrangementsGenerator.GenerateUsingTranslationsFor(shipBlueprint.Set,
             new GridConstrains(3, 3));
 
         result.Should().HaveCount(6);
@@ -56,7 +56,7 @@ public class SingleShipBlueprintArrangementsGenerationTests
     {
         var shipBlueprint = ShipBlueprint.FromText("a", "----");
 
-        var result = ArrangementsGenerator.GenerateUsingTranslationsFor(shipBlueprint, 
+        var result = ArrangementsGenerator.GenerateUsingTranslationsFor(shipBlueprint.Set,
             new GridConstrains(3, 3));
 
         result.Should().HaveCount(0);
@@ -67,7 +67,7 @@ public class SingleShipBlueprintArrangementsGenerationTests
     {
         var shipBlueprint = ShipBlueprint.FromText("a", "----");
 
-        var result = ArrangementsGenerator.GenerateUsingTranslationsFor(shipBlueprint, 
+        var result = ArrangementsGenerator.GenerateUsingTranslationsFor(shipBlueprint.Set,
             new GridConstrains(4, 3));
 
         result.Should().HaveCount(3);
@@ -84,7 +84,7 @@ public class SingleShipBlueprintArrangementsGenerationTests
     {
         var shipBlueprint = ShipBlueprint.FromText("a", "--");
 
-        var result = ArrangementsGenerator.GenerateUsingRotationsFor(shipBlueprint, 
+        var result = ArrangementsGenerator.GenerateUsingRotationsFor(shipBlueprint.Set,
             new GridConstrains(3, 3));
 
         result.Should().HaveCount(2);
@@ -100,7 +100,7 @@ public class SingleShipBlueprintArrangementsGenerationTests
     {
         var shipBlueprint = ShipBlueprint.FromText("a", "----");
 
-        var result = ArrangementsGenerator.GenerateUsingRotationsFor(shipBlueprint, 
+        var result = ArrangementsGenerator.GenerateUsingRotationsFor(shipBlueprint.Set,
             new GridConstrains(3, 3));
 
         result.Should().HaveCount(0);
@@ -111,7 +111,7 @@ public class SingleShipBlueprintArrangementsGenerationTests
     {
         var shipBlueprint = ShipBlueprint.FromText("a", "----");
 
-        var result = ArrangementsGenerator.GenerateUsingRotationsFor(shipBlueprint, 
+        var result = ArrangementsGenerator.GenerateUsingRotationsFor(shipBlueprint.Set,
             new GridConstrains(1, 4));
 
         result.Should().HaveCount(1);
@@ -119,5 +119,14 @@ public class SingleShipBlueprintArrangementsGenerationTests
         {
             CoordinatesSet.Create((0, 0), (0, 1), (0, 2), (0, 3))
         });
+    }
+
+    [Fact]
+    public void generate_using_both_rotations_and_translations_for_ship_of_size_2_on_3x3_grid()
+    {
+        var shipBlueprint = ShipBlueprint.FromText("a", "--");
+
+        // var result = ArrangementsGenerator.GenerateUsingBothTranslationsAndRotationsFor(shipBlueprint, 
+        //     new GridConstrains(3, 3));
     }
 }

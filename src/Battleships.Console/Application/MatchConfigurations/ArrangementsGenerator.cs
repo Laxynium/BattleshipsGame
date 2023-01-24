@@ -4,10 +4,9 @@ namespace Battleships.Console.Application.MatchConfigurations;
 
 public class ArrangementsGenerator
 {
-    public static IReadOnlyCollection<CoordinatesSet> GenerateUsingTranslationsFor(
-        ShipBlueprint shipBlueprint, GridConstrains gridConstrains)
+    public static IReadOnlyCollection<CoordinatesSet> GenerateUsingTranslationsFor(CoordinatesSet ship, GridConstrains gridConstrains)
     {
-        var normalized = NormalizeToOrigin(shipBlueprint.Set);
+        var normalized = NormalizeToOrigin(ship);
 
         var ((minX, maxX), (minY, maxY)) = normalized.GetBoundaries();
         
@@ -18,16 +17,15 @@ public class ArrangementsGenerator
                 .ToList();
             
         var translated = translations
-            .Select(t => shipBlueprint.Set.Translate(t.x, t.y))
+            .Select(t => ship.Translate(t.x, t.y))
             .ToList();
         
         return translated;
     }
 
-    public static IReadOnlyCollection<CoordinatesSet> GenerateUsingRotationsFor(
-        ShipBlueprint shipBlueprint, GridConstrains gridConstrains)
+    public static IReadOnlyCollection<CoordinatesSet> GenerateUsingRotationsFor(CoordinatesSet ship, GridConstrains gridConstrains)
     {
-        var normalized = NormalizeToOrigin(shipBlueprint.Set);
+        var normalized = NormalizeToOrigin(ship);
         
         var rotated = new[]
             {
@@ -51,6 +49,17 @@ public class ArrangementsGenerator
             .ToHashSet();
     }
 
+    // public static IReadOnlyCollection<CoordinatesSet> GenerateUsingBothTranslationsAndRotationsFor(
+    //     ShipBlueprint shipBlueprint, GridConstrains gridConstrains)
+    // {
+    //     var rotations = GenerateUsingRotationsFor(shipBlueprint, gridConstrains);
+    //
+    //     foreach (var rotation in rotations)
+    //     {
+    //         GenerateUsingTranslationsFor(shipBlueprint)
+    //     }
+    // }
+
     private static CoordinatesSet NormalizeToOrigin(CoordinatesSet set)
     {
         var ((minX,_), (minY, _)) = set.GetBoundaries();
@@ -64,5 +73,4 @@ public class ArrangementsGenerator
         Enumerable.Range(0, minCoord).Select(i => minCoord - i)
             .Concat(Enumerable.Range(maxCoord, boundary-maxCoord).Select(i => i - maxCoord))
             .ToList();
-    
 }
