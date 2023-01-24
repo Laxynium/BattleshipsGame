@@ -1,5 +1,4 @@
 ﻿using Battleships.Console.Application;
-using Battleships.Console.Application.Fleets;
 using Battleships.Console.Application.MatchCockpit;
 using Battleships.Console.Application.MatchConfigurations;
 
@@ -14,12 +13,7 @@ public class Program
             ("3", ShipBlueprint.FromText("Destroyer", "----"))));
 
     //TODO replace with random fleet arranger
-    private static readonly FixedFleetArranger FleetArranger = new(new[]
-    {
-        (new FleetShipId("1"), new GridCoordinates[] { "A1", "A2", "A3", "A4", "A5" }),
-        (new FleetShipId("2"), new GridCoordinates[] { "B1", "B2", "B3", "B4" }),
-        (new FleetShipId("3"), new GridCoordinates[] { "C1", "C2", "C3", "C4" }),
-    });
+    private static readonly IFleetArranger FleetArranger = new RandomFleetArranger();
 
     private static void Main()
     {
